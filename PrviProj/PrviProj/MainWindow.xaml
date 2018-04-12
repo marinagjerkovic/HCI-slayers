@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <TextBox x:Name="JSONlink" HorizontalAlignment="Left" Height="17" Margin="62,37,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="297"/>
+        <TextBox x:Name="JSONoutput" HorizontalAlignment="Left" Height="164" Margin="62,74,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="297" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <Button x:Name="load" Content="LOAD" HorizontalAlignment="Left" Height="17" Margin="383,37,0,0" VerticalAlignment="Top" Width="69" Click="load_Click"/>
+
     </Grid>
 </Window>

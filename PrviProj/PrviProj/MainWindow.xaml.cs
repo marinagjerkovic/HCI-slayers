@@ -24,5 +24,22 @@ namespace PrviProj
         {
             InitializeComponent();
         }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void load_Click(object sender, RoutedEventArgs e)
+        {
+            LoadJSON client = new LoadJSON();
+            client.endPoint = JSONlink.Text;
+
+            string response = string.Empty;
+            response = client.makeRequest();
+
+            JSONoutput.Text = response;
+
+        }
     }
 }
