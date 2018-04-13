@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,11 @@ namespace PrviProj
         public MainWindow()
         {
             InitializeComponent();
+            currency_datagrid.ItemsSource = Currency.generateData();
+            crypto_datagrid.ItemsSource = Currency.generateData();
+            stocks_datagrid.ItemsSource = Currency.generateData();
+
+
         }
 
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -32,13 +38,13 @@ namespace PrviProj
 
         private void load_Click(object sender, RoutedEventArgs e)
         {
-            LoadJSON client = new LoadJSON();
-            client.endPoint = JSONlink.Text;
+            //LoadJSON client = new LoadJSON();
+            //client.endPoint = JSONlink.Text;
 
-            string response = string.Empty;
-            response = client.makeRequest();
+            //string response = string.Empty;
+            //response = client.makeRequest();
 
-            JSONoutput.Text = response;
+            //JSONoutput.Text = response;
 
         }
     }

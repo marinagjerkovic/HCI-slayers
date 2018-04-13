@@ -5,11 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PrviProj"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <TextBox x:Name="JSONlink" HorizontalAlignment="Left" Height="17" Margin="62,37,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="297"/>
-        <TextBox x:Name="JSONoutput" HorizontalAlignment="Left" Height="164" Margin="62,74,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="297" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-        <Button x:Name="load" Content="LOAD" HorizontalAlignment="Left" Height="17" Margin="383,37,0,0" VerticalAlignment="Top" Width="69" Click="load_Click"/>
+        Title="MainWindow"
+        Height="{Binding SystemParameters.PrimaryScreenHeight}" 
+        Width="{Binding SystemParameters.PrimaryScreenWidth}">
+    <Border Padding="10">
+        <StackPanel>
+            <!-- prve tri tabele -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DataGrid Name="currency_datagrid" AutoGenerateColumns="False"  Margin="0 0 10 0" Grid.Column="0"
+                          GridLinesVisibility="Horizontal"  SelectedItem="{Binding Path=SelectedCustomer, Mode=TwoWay}">
+                    <DataGrid.Columns >
 
-    </Grid>
+                        <DataGridTextColumn Header="broj" Binding="{Binding Broj}" Width="Auto" MinWidth="100"/>
+                        <DataGridTextColumn Header="ime" Binding="{Binding Ime}"  Width="Auto" MinWidth="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid Name="crypto_datagrid" AutoGenerateColumns="False"  Margin="0 0 10 0" Grid.Column="1" GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns >
+
+                        <DataGridTextColumn Header="broj" Binding="{Binding Broj}" Width="Auto" MinWidth="100"/>
+                        <DataGridTextColumn Header="ime" Binding="{Binding Ime}"  Width="Auto" MinWidth="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid Name="stocks_datagrid" AutoGenerateColumns="False"  Margin="0 0 10 0" Grid.Column="2" GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns >
+                        <DataGridTextColumn Header="broj" Binding="{Binding Broj}" Width="Auto" MinWidth="100"/>
+                        <DataGridTextColumn Header="ime" Binding="{Binding Ime}"  Width="*" MinWidth="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            
+            <!-- treba sad za svaki "red" u prozoru dodati grid da lepo izgleda posto taj stack panel slaze jedno ispod
+                drugog lepo. i u svaki grid dodati grid.columnDefinition da izgleda lepo
+            -->
+            <Grid>
+                
+            </Grid>
+            <TextBox Text="{Binding SelectedItem.Ime2, ElementName=stocks_datagrid}"/>
+        </StackPanel>
+    </Border>
 </Window>
