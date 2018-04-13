@@ -6,51 +6,86 @@
         xmlns:local="clr-namespace:PrviProj"
         mc:Ignorable="d"
         Title="Stocking Currency since 1996" Height="612" Width="1191.5">
-    <Grid>
-        <DataGrid x:Name="digitalCurrenciesBox" ItemsSource="{Binding Path=digitalCurrenciesList}" IsReadOnly="True" Margin="1147,0,0,693"/>
+    <Border Margin="10 10 10 10">
+        <StackPanel>
+            <Grid Margin=" 0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Name="cbDigital"  Margin="0 0 10 0"  Grid.Column="0" Loaded="ComboBox_Loaded_Digital" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyDigital" Unchecked="RemoveCurrencyDigital" />
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-        <ComboBox Name="cbDigital" Width="310" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,30,0,515" Loaded="ComboBox_Loaded_Digital" Height="36">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyDigital" Unchecked="RemoveCurrencyDigital" />
-                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+                <ComboBox Name="cbPhysical" Grid.Column="1" Loaded="ComboBox_Loaded_Physical" Margin="0 0 10 0" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyPhysical" Unchecked="RemoveCurrencyPhysical" />
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-        <ComboBox Name="cbPhysical" Width="299" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="310,32,0,513" Loaded="ComboBox_Loaded_Physical" Height="36">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyPhysical" Unchecked="RemoveCurrencyPhysical" />
-                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+                <ComboBox Name="cbStocks" Margin="0 0 10 0" Grid.Column="2" Loaded="ComboBox_Loaded_Stocks"  >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddStock" Unchecked="RemoveStock" />
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-        <ComboBox Name="cbStocks" Width="320" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="609,30,0,513" Loaded="ComboBox_Loaded_Stocks" Height="38" >
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddStock" Unchecked="RemoveStock" />
-                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <Frame x:Name="AddingFrame" Content="" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="1184" Background="LightGray">
-        </Frame>
+            </Grid >
 
-        <Label x:Name="digital" Content="Add digital currencies:" HorizontalAlignment="Left" Height="25" Margin="10,5,0,0" VerticalAlignment="Top" Width="182"/>
-        <Label x:Name="physical" Content="Add physical curencies:" HorizontalAlignment="Left" Height="25" Margin="310,5,0,0" VerticalAlignment="Top" Width="176"/>
-        <Label x:Name="stocks" Content="Add stocks:" HorizontalAlignment="Left" Height="25" Margin="610,5,0,0" VerticalAlignment="Top" Width="181"/>
-        <DataGrid x:Name="dataGridDigital" ItemsSource="{Binding Path=chosenDigitalList}" IsReadOnly="True" HorizontalAlignment="Left" Height="127" Margin="0,66,0,0" VerticalAlignment="Top" Width="305"/>
-        <DataGrid x:Name="dataGridPhysical" ItemsSource="{Binding Path=chosenPhysicalList}" IsReadOnly="True" HorizontalAlignment="Left" Height="127" Margin="310,66,0,0" VerticalAlignment="Top" Width="300"/>
-        <DataGrid x:Name="dataGridStock" ItemsSource="{Binding Path=chosenStockList}" IsReadOnly="True" HorizontalAlignment="Left" Height="125" Margin="608,68,0,0" VerticalAlignment="Top" Width="321"/>
+            <Grid Margin="0 20 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="digital" Content="Add digital currencies:" Margin="0 0 10 0" Grid.Column="0" />
+                <Label x:Name="physical" Content="Add physical curencies:" Margin="0 0 10 0" Grid.Column="1"/>
+                <Label x:Name="stocks" Content="Add stocks:" Margin="0 0 10 0" Grid.Column="2"/>
+            </Grid>
+            <Grid  Margin="0 20 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DataGrid  AutoGenerateColumns="False"  x:Name="dataGridDigital" ItemsSource="{Binding Path=chosenDigitalList}" IsReadOnly="True" Grid.Column="0" Margin="0 0 10 0" >
+                    <DataGrid.Columns >
+                        <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="Auto" MinWidth="100"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="*" MinWidth="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid  AutoGenerateColumns="False" x:Name="dataGridPhysical" ItemsSource="{Binding Path=chosenPhysicalList}" IsReadOnly="True" Grid.Column="1" Margin="0 0 10 0">
+                    <DataGrid.Columns >
+                        <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="Auto" MinWidth="100"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="*" MinWidth="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid AutoGenerateColumns="False"  x:Name="dataGridStock" ItemsSource="{Binding chosenStockList}" IsReadOnly="True" Grid.Column="2" Margin="0 0 10 0">
+                    <DataGrid.Columns >
+                        <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="Auto" MinWidth="100"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="*" MinWidth="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
 
 
-    </Grid>
+            </Grid>
+        </StackPanel>
+    </Border>
 </Window>
