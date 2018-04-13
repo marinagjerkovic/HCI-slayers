@@ -47,6 +47,8 @@ namespace PrviProj
             chosenDigitalList = new ObservableCollection<CurrencyClass>();
             chosenPhysicalList = new ObservableCollection<CurrencyClass>();
             chosenStockList = new ObservableCollection<CurrencyClass>();
+
+            ucitajIspisiJSON();
         }
 
         //za prikaz u comboboxu
@@ -115,7 +117,7 @@ namespace PrviProj
             {
                 if (c.Symbol.Equals(symbol))
                 {
-                    chosenDigitalList.Add(c);
+                    chosenDigitalList.Insert(0,c);
                 }
             }
         }
@@ -129,7 +131,7 @@ namespace PrviProj
             {
                 if (c.Symbol.Equals(symbol))
                 {
-                    chosenPhysicalList.Add(c);
+                    chosenPhysicalList.Insert(0, c);
                 }
             }
         }
@@ -144,7 +146,7 @@ namespace PrviProj
             {
                 if (c.Symbol.Equals(symbol))
                 {
-                    chosenStockList.Add(c);
+                    chosenStockList.Insert(0, c);
                 }
             }
         }
@@ -207,6 +209,19 @@ namespace PrviProj
 
             //JSONoutput.Text = response;
 
+        }
+
+
+        //proba
+        private void ucitajIspisiJSON()
+        {
+            LoadJSON client = new LoadJSON();
+            client.endPoint = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=MSFT&apikey=demo";
+
+            string response = string.Empty;
+            response = client.makeRequest();
+            textBox.Text = response;
+            //JSONoutput.Text = response;
         }
     }
 }

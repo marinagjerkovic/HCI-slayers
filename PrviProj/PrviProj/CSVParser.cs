@@ -26,7 +26,12 @@ namespace PrviProj
                     //Processing row
                     
                     string[] fields = parser.ReadFields();
-                    currencyList.Add(new CurrencyClass { Symbol = fields[0], Name = fields[1] });
+                    CurrencyType type = CurrencyType.TIME_SERIES_DAILY;
+                    if (path.Equals("digital_currencies.txt"))
+                    {
+                        type = CurrencyType.DIGITAL_CURRENCY_DAILY;
+                    }
+                    currencyList.Add(new CurrencyClass { Symbol = fields[0], Name = fields[1], Type = type});
                     
                 }
             }
