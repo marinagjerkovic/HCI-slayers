@@ -5,48 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PrviProj"
         mc:Ignorable="d"
-        Title="MainWindow"
-        Height="{Binding SystemParameters.PrimaryScreenHeight}" 
-        Width="{Binding SystemParameters.PrimaryScreenWidth}">
-    <Border Padding="10">
-        <StackPanel>
-            <!-- prve tri tabele -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <DataGrid Name="currency_datagrid" AutoGenerateColumns="False"  Margin="0 0 10 0" Grid.Column="0"
-                          GridLinesVisibility="Horizontal"  SelectedItem="{Binding Path=SelectedCustomer, Mode=TwoWay}">
-                    <DataGrid.Columns >
+        Title="Stocking Currency since 1996" Height="612" Width="1191.5">
+    <Grid>
+        <DataGrid x:Name="digitalCurrenciesBox" ItemsSource="{Binding Path=digitalCurrenciesList}" IsReadOnly="True" Margin="1147,0,0,693"/>
 
-                        <DataGridTextColumn Header="broj" Binding="{Binding Broj}" Width="Auto" MinWidth="100"/>
-                        <DataGridTextColumn Header="ime" Binding="{Binding Ime}"  Width="Auto" MinWidth="100" />
-                    </DataGrid.Columns>
-                </DataGrid>
-                <DataGrid Name="crypto_datagrid" AutoGenerateColumns="False"  Margin="0 0 10 0" Grid.Column="1" GridLinesVisibility="Horizontal">
-                    <DataGrid.Columns >
+        <ComboBox Name="cbDigital" Width="310" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,30,0,515" Loaded="ComboBox_Loaded_Digital" Height="36">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyDigital" Unchecked="RemoveCurrencyDigital" />
+                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
-                        <DataGridTextColumn Header="broj" Binding="{Binding Broj}" Width="Auto" MinWidth="100"/>
-                        <DataGridTextColumn Header="ime" Binding="{Binding Ime}"  Width="Auto" MinWidth="100" />
-                    </DataGrid.Columns>
-                </DataGrid>
-                <DataGrid Name="stocks_datagrid" AutoGenerateColumns="False"  Margin="0 0 10 0" Grid.Column="2" GridLinesVisibility="Horizontal">
-                    <DataGrid.Columns >
-                        <DataGridTextColumn Header="broj" Binding="{Binding Broj}" Width="Auto" MinWidth="100"/>
-                        <DataGridTextColumn Header="ime" Binding="{Binding Ime}"  Width="*" MinWidth="100" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-            
-            <!-- treba sad za svaki "red" u prozoru dodati grid da lepo izgleda posto taj stack panel slaze jedno ispod
-                drugog lepo. i u svaki grid dodati grid.columnDefinition da izgleda lepo
-            -->
-            <Grid>
-                
-            </Grid>
-            <TextBox Text="{Binding SelectedItem.Ime2, ElementName=stocks_datagrid}"/>
-        </StackPanel>
-    </Border>
+        <ComboBox Name="cbPhysical" Width="299" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="310,32,0,513" Loaded="ComboBox_Loaded_Physical" Height="36">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyPhysical" Unchecked="RemoveCurrencyPhysical" />
+                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <ComboBox Name="cbStocks" Width="320" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="609,30,0,513" Loaded="ComboBox_Loaded_Stocks" Height="38" >
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddStock" Unchecked="RemoveStock" />
+                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Frame x:Name="AddingFrame" Content="" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="1184" Background="LightGray">
+        </Frame>
+
+        <Label x:Name="digital" Content="Add digital currencies:" HorizontalAlignment="Left" Height="25" Margin="10,5,0,0" VerticalAlignment="Top" Width="182"/>
+        <Label x:Name="physical" Content="Add physical curencies:" HorizontalAlignment="Left" Height="25" Margin="310,5,0,0" VerticalAlignment="Top" Width="176"/>
+        <Label x:Name="stocks" Content="Add stocks:" HorizontalAlignment="Left" Height="25" Margin="610,5,0,0" VerticalAlignment="Top" Width="181"/>
+        <DataGrid x:Name="dataGridDigital" ItemsSource="{Binding Path=chosenDigitalList}" IsReadOnly="True" HorizontalAlignment="Left" Height="127" Margin="0,66,0,0" VerticalAlignment="Top" Width="305"/>
+        <DataGrid x:Name="dataGridPhysical" ItemsSource="{Binding Path=chosenPhysicalList}" IsReadOnly="True" HorizontalAlignment="Left" Height="127" Margin="310,66,0,0" VerticalAlignment="Top" Width="300"/>
+        <DataGrid x:Name="dataGridStock" ItemsSource="{Binding Path=chosenStockList}" IsReadOnly="True" HorizontalAlignment="Left" Height="125" Margin="608,68,0,0" VerticalAlignment="Top" Width="321"/>
+
+
+    </Grid>
 </Window>
