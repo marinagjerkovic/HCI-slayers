@@ -7,18 +7,7 @@ using System.Threading.Tasks;
 
 namespace PrviProj
 {
-    public enum CurrencyType
-    {
-        TIME_SERIES_INTRADAY,
-        TIME_SERIES_DAILY,
-        TIME_SERIES_WEEKLY,
-        TIME_SERIES_MONTHLY,
-        DIGITAL_CURRENCY_INTRADAY,
-        DIGITAL_CURRENCY_DAILY,
-        DIGITAL_CURRENCY_WEEKLY,
-        DIGITAL_CURRENCY_MONTHLY
-    }
-
+    
 
     public class CurrencyClass : INotifyPropertyChanged
     {
@@ -32,7 +21,7 @@ namespace PrviProj
         }
         private string _name;
         private string _symbol;
-        private CurrencyType _type; 
+        
 
         public string Name
         {
@@ -65,23 +54,7 @@ namespace PrviProj
                 }
             }
         }
-
-
-        public CurrencyType Type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                if (value != _type)
-                {
-                    _type = value;
-                    OnPropertyChanged("Type");
-                }
-            }
-        }
+        
 
 
         public string toString()
