@@ -15,8 +15,8 @@ using System.Windows.Shapes;
 using System.Collections;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
-using Newtonsoft.Json;
 using System.Windows.Forms.DataVisualization.Charting;
+using Newtonsoft.Json;
 
 namespace PrviProj
 {
@@ -54,7 +54,7 @@ namespace PrviProj
             chosenPhysicalList = new ObservableCollection<CurrencyClass>();
             chosenStockList = new ObservableCollection<CurrencyClass>();
 
-            ucitajIspisiJSON();
+            //ucitajIspisiJSON();
 
             value = new Dictionary<int, double>();
             for (int i = 0; i < 10; i++)
@@ -69,6 +69,8 @@ namespace PrviProj
             chart2.DataSource = value;
             chart2.Series["series"].XValueMember = "Key";
             chart2.Series["series"].YValueMembers = "Value";
+            shownCurrenciesList = new ObservableCollection<ShowingCurrencyClass>();
+            //ucitajIspisiJSON();
         }
 
         //za prikaz u comboboxu
