@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Collections;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PrviProj
@@ -36,6 +37,8 @@ namespace PrviProj
         public ObservableCollection<CurrencyClass> chosenPhysicalList { get; set; }
         public ObservableCollection<CurrencyClass> chosenStockList { get; set; }
 
+        public ObservableCollection<ShowingCurrencyClass> shownCurrenciesList { get; set; }
+        
 
         public MainWindow()
         {
@@ -212,33 +215,59 @@ namespace PrviProj
                     break;
                 }
             }
+        }      
+
+
+
+        private void dataGridDigital_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            {
+                if (sender != null)
+                {
+                    DataGrid grid = sender as DataGrid;
+                    if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+                    {
+                        DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+
+                        string symbol = ((CurrencyClass)dgr.Item).Symbol;
+
+                        //ovde ce se prosledjivati interval u zavisnosti od toga koji je korisnik izabrao
+                        loadJSONDigital(CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY, symbol);
+                    }
+                }
+            }
         }
 
-
-        //ovo treba da se izvrsi kad se klikne na neku valutu
-        private void load_Click(object sender, RoutedEventArgs e)
+        //npr DIGITAL_CURRENCY_MONTHLY, BTC -> za mesecni bitcoin 
+        private void loadJSONDigital(CurrencyIntervalType interval, string symbol)
         {
             LoadJSON client = new LoadJSON();
-            //client.endPoint = JSONlink.Text;
+            client.endPoint = "https://www.alphavantage.co/query?function=" + interval.ToString() + "&symbol=" + symbol + "&market=CNY&apikey=9P2LP0T1YR34LBSK";
 
             string response = string.Empty;
             response = client.makeRequest();
 
-            //JSONoutput.Text = response;
+            var jObj = JsonConvert.DeserializeObject<dynamic>(response);
+            ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
 
-        }
+            showingCurrency.Metadata = jObj["Meta Data"].ToObject<Dictionary<string, string>>();
+            showingCurrency.Type = interval;
+            
+            //u zavisnosti od intervala se prosledjuje kljuc za timeseries
+            showingCurrency.Timeseries = jObj["Time Series (Digital Currency Monthly)"].ToObject<Dictionary<string, Dictionary<string, string>>>();
 
 
-        //proba
-        private void ucitajIspisiJSON()
-        {
-            LoadJSON client = new LoadJSON();
-            client.endPoint = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=MSFT&apikey=demo";
 
-            string response = string.Empty;
-            response = client.makeRequest();
-            textBox.Text = response;
-            //JSONoutput.Text = response;
+            string ispis = string.Empty;
+            //proba
+            foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
+            {
+                ispis = ispis + "\n" + key + ":" + showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key];
+            }
+
+            textBox.Text = ispis;
+
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
