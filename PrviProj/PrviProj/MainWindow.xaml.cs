@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -15,14 +15,17 @@ using System.Windows.Shapes;
 using System.Collections;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PrviProj
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
     public partial class MainWindow : Window
     {
+        Dictionary<int, double> value;
 
         private CSVParser parser = new CSVParser();
         public ObservableCollection<CurrencyClass> physicalCurrenciesList { get; set; }
@@ -36,7 +39,7 @@ namespace PrviProj
 
         public MainWindow()
         {
-            
+            //var chart = new LineChart();
             InitializeComponent();
             this.DataContext = this;
 
@@ -49,6 +52,20 @@ namespace PrviProj
             chosenStockList = new ObservableCollection<CurrencyClass>();
 
             ucitajIspisiJSON();
+
+            value = new Dictionary<int, double>();
+            for (int i = 0; i < 10; i++)
+                value.Add(i, 10 * i);
+
+            Chart chart = this.FindName("MyWinformChart") as Chart;
+            chart.DataSource = value;
+            chart.Series["series"].XValueMember = "Key";
+            chart.Series["series"].YValueMembers = "Value";
+
+            Chart chart2 = this.FindName("MyWinformChart2") as Chart;
+            chart2.DataSource = value;
+            chart2.Series["series"].XValueMember = "Key";
+            chart2.Series["series"].YValueMembers = "Value";
         }
 
         //za prikaz u comboboxu
@@ -222,6 +239,11 @@ namespace PrviProj
             response = client.makeRequest();
             textBox.Text = response;
             //JSONoutput.Text = response;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
