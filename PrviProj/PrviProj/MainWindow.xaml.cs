@@ -234,17 +234,77 @@ namespace PrviProj
                         string symbol = ((CurrencyClass)dgr.Item).Symbol;
 
                         //ovde ce se prosledjivati interval u zavisnosti od toga koji je korisnik izabrao
-                        loadJSONDigital(CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY, symbol);
+                        loadJSON(CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY, symbol);
                     }
                 }
             }
         }
 
+        private void dataGridPhysicalStock_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            {
+                if (sender != null)
+                {
+                    DataGrid grid = sender as DataGrid;
+                    if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+                    {
+                        DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+
+                        string symbol = ((CurrencyClass)dgr.Item).Symbol;
+
+                        //ovde ce se prosledjivati interval u zavisnosti od toga koji je korisnik izabrao
+                        loadJSON(CurrencyIntervalType.TIME_SERIES_MONTHLY, symbol);
+                    }
+                }
+            }
+        }
+
+        
+
         //npr DIGITAL_CURRENCY_MONTHLY, BTC -> za mesecni bitcoin 
-        private void loadJSONDigital(CurrencyIntervalType interval, string symbol)
+        private void loadJSON(CurrencyIntervalType interval, string symbol)
         {
             LoadJSON client = new LoadJSON();
-            client.endPoint = "https://www.alphavantage.co/query?function=" + interval.ToString() + "&symbol=" + symbol + "&market=CNY&apikey=9P2LP0T1YR34LBSK";
+            string link = string.Empty;
+            string keyForTimeseries = string.Empty;
+
+            switch (interval)
+            {
+                case CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY:
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_INTRADAY&symbol="+symbol+ "&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Time Series (Digital Currency Intraday)";
+                    break;
+                case CurrencyIntervalType.DIGITAL_CURRENCY_DAILY:
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol="+symbol+"&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Time Series (Digital Currency Daily)";
+                    break;
+                case CurrencyIntervalType.DIGITAL_CURRENCY_WEEKLY:
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&symbol="+symbol+"&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Time Series (Digital Currency Weekly)";
+                    break;
+                case CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY:
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_MONTHLY&symbol="+symbol+"&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Time Series (Digital Currency Monthly)";
+                    break;
+                case CurrencyIntervalType.TIME_SERIES_INTRADAY:
+                    link = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=15min&outputsize=full&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Time Series (15min)";
+                    break;
+                case CurrencyIntervalType.TIME_SERIES_DAILY:
+                    link = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol + "&outputsize=full&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Time Series (Daily)";
+                    break;
+                case CurrencyIntervalType.TIME_SERIES_WEEKLY:
+                    link = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol="+symbol+ "&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Weekly Time Series";
+                    break;              
+                default:
+                    link = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol="+symbol+ "&apikey=9P2LP0T1YR34LBSK";
+                    keyForTimeseries = "Monthly Time Series";
+                    break;
+            }
+
+            client.endPoint = link;
 
             string response = string.Empty;
             response = client.makeRequest();
@@ -256,9 +316,9 @@ namespace PrviProj
             showingCurrency.Type = interval;
             
             //u zavisnosti od intervala se prosledjuje kljuc za timeseries
-            showingCurrency.Timeseries = jObj["Time Series (Digital Currency Monthly)"].ToObject<Dictionary<string, Dictionary<string, string>>>();
+            showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, string>>>();
 
-
+            shownCurrenciesList.Add(showingCurrency);
 
             string ispis = string.Empty;
             //proba
@@ -276,5 +336,7 @@ namespace PrviProj
         {
 
         }
+
+        
     }
 }
