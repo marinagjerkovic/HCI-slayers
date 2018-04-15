@@ -34,11 +34,10 @@
                         <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="Auto" MinWidth="100"/>
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="Auto" MinWidth="100" />
                         <DataGridTextColumn Header="Value" Binding="{Binding Value}"  Width="Auto" MinWidth="100" />
-                        <DataGridTemplateColumn Header="Delete" Width="*">
+                        <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="Delete"
-                            Command="Delete"/>
+                                    <Button Content="Remove" Command="Delete" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

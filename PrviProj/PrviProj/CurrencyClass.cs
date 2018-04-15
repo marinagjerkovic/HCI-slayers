@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Windows;
 
 namespace PrviProj
 {
@@ -135,12 +135,20 @@ namespace PrviProj
             _client.endPoint = link;
 
             string response = string.Empty;
-            response = _client.makeRequest();           
+            response = _client.makeRequest();
+            if (!response.Contains("Information"))
+            {
+                MessageBox.Show(response);
+                var jObj = JsonConvert.DeserializeObject<dynamic>(response);
+                Dictionary<string, string> recnik = jObj["Realtime Currency Exchange Rate"].ToObject<Dictionary<string, string>>();
 
-            var jObj = JsonConvert.DeserializeObject<dynamic>(response);
-            Dictionary<string, string> recnik = jObj["Realtime Currency Exchange Rate"].ToObject<Dictionary<string, string>>();
-            
-            this.Value = Convert.ToDouble(recnik["5. Exchange Rate"]);
+                this.Value = Convert.ToDouble(recnik["5. Exchange Rate"]);
+            }
+            else
+            {
+                MessageBox.Show(response);
+
+            }
         }
 
 
