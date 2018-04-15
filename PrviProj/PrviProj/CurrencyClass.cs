@@ -24,7 +24,7 @@ namespace PrviProj
         }
         private string _name;
         private string _symbol;
-        private double _value;
+        private string _value;
         private Timer _timer;
         private LoadJSON _client;
         private TimeSpan _begin = TimeSpan.Zero;
@@ -63,7 +63,7 @@ namespace PrviProj
         }
 
 
-        public double Value
+        public string Value
         {
             get
             {
@@ -113,11 +113,28 @@ namespace PrviProj
         }
 
 
+        public TimeSpan Interval
+        {
+            get
+            {
+                return _interval;
+            }
+            set
+            {
+                if (value != _interval)
+                {
+                    _interval = value;
+                    OnPropertyChanged("Interval");
+                }
+            }
+        }
+
+
         public void startTiming(int seconds)
         {
-            _client = new LoadJSON();
-            _interval = TimeSpan.FromSeconds(seconds);
-            _timer = new Timer((e) =>
+            
+            this.Interval = TimeSpan.FromSeconds(seconds);
+            this.Timer = new Timer((e) =>
             {
                 getExchangeRate();
             }, null, _begin, _interval);
@@ -130,17 +147,24 @@ namespace PrviProj
         {
             //vuku se podaci sa neta za zadat simbol i referentnu valutu
             string refSymbol = "USD";
-            string link = "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency="+_symbol+"&to_currency="+refSymbol+"&apikey=9P2LP0T1YR34LBSK";
+            string link = "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency="+this.Symbol+"&to_currency="+refSymbol+"&apikey=9P2LP0T1YR34LBSK";
 
-            _client.endPoint = link;
+            this.Client.endPoint = link;
 
             string response = string.Empty;
-            response = _client.makeRequest();           
+            response = this.Client.makeRequest();           
 
             var jObj = JsonConvert.DeserializeObject<dynamic>(response);
-            Dictionary<string, string> recnik = jObj["Realtime Currency Exchange Rate"].ToObject<Dictionary<string, string>>();
+            try
+            {
+                Dictionary<string, string> recnik = jObj["Realtime Currency Exchange Rate"].ToObject<Dictionary<string, string>>();
+
+                this.Value = recnik["5. Exchange Rate"];
+            }catch
+            {
+                this.Value = "unable to fetch";
+            }
             
-            this.Value = Convert.ToDouble(recnik["5. Exchange Rate"]);
         }
 
 

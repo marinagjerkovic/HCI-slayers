@@ -136,8 +136,12 @@ namespace PrviProj
                     //ovde ubacujem da se trazi vrednost u odnosu na referentnu valutu, nek je defaultna USD
                     //i da se updatuje na svakih 10 sec
 
-                    chosenDigitalList.Insert(0, c);
+                    c.Client = new LoadJSON();
+                        
                     c.startTiming(10);
+                    chosenDigitalList.Insert(0, c);
+                    break;
+                    
                     
                     
                     
@@ -154,10 +158,11 @@ namespace PrviProj
             {
                 if (c.Symbol.Equals(symbol))
                 {
-
+                    c.Client = new LoadJSON();
                     c.startTiming(10);
 
                     chosenPhysicalList.Insert(0, c);
+                    break;
                 }
             }
         }
@@ -174,6 +179,7 @@ namespace PrviProj
                 {
                     //za deonice ne moze da se dobije exchange rate sa alpha vantage-a
                     chosenStockList.Insert(0, c);
+                    break;
                 }
             }
         }
