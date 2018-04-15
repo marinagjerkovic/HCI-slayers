@@ -17,6 +17,9 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows.Forms.DataVisualization.Charting;
 using Newtonsoft.Json;
+using System.Windows.Forms.Integration;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace PrviProj
 {
@@ -60,15 +63,6 @@ namespace PrviProj
             for (int i = 0; i < 10; i++)
                 value.Add(i, 10 * i);
 
-            Chart chart = this.FindName("MyWinformChart") as Chart;
-            chart.DataSource = value;
-            chart.Series["series"].XValueMember = "Key";
-            chart.Series["series"].YValueMembers = "Value";
-
-            Chart chart2 = this.FindName("MyWinformChart2") as Chart;
-            chart2.DataSource = value;
-            chart2.Series["series"].XValueMember = "Key";
-            chart2.Series["series"].YValueMembers = "Value";
             shownCurrenciesList = new ObservableCollection<ShowingCurrencyClass>();
             //ucitajIspisiJSON();
         }
@@ -319,16 +313,35 @@ namespace PrviProj
             showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, string>>>();
 
             shownCurrenciesList.Add(showingCurrency);
+           
+            TabItem tabItem = new TabItem();
+            tabItem.Header = symbol;
+            CartesianChart cart = new CartesianChart();
 
-            string ispis = string.Empty;
-            //proba
+
+            ChartValues<double> dabl = new ChartValues<double>();
             foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
             {
-                ispis = ispis + "\n" + key + ":" + showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key];
+                Double a = Double.Parse(showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key]);
+                dabl.Add(a);
+                //ne znam sta sa podacima
             }
-
-            textBox.Text = ispis;
-
+            LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
+                {
+                new LineSeries
+                {
+                    Title = "Series 1",
+                    Values = dabl
+                }
+            };
+            cart.Series = sers;
+            tabItem.Content = cart;
+            //ScrollViewer skrol = new ScrollViewer();
+            //skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
+            //skrol.Content = cart;
+            tabItem.Content = cart;
+            tabControl.Items.Add(tabItem);
+            tabControl.SelectedItem = tabItem;
 
         }
 

@@ -117,31 +117,7 @@
             </Grid >
             <TextBox Margin="10 20 0 0 " Text="{Binding SelectedItem.Name,  ElementName=dataGridDigital}" Grid.Row="2"/>
             <TextBox x:Name="textBox" HorizontalAlignment="Left"  Margin="0 10 0 0" TextWrapping="Wrap" Text="" Width="386" Grid.Row="3"/>
-            <TabControl Grid.Row="4">
-                <TabItem Header="General">
-                    <WindowsFormsHost x:Name="host" Height="Auto">
-                        <winformchart:Chart x:Name="MyWinformChart">
-                            <winformchart:Chart.Series>
-                                <winformchart:Series Name="series" ChartType="Line"/>
-                            </winformchart:Chart.Series>
-                            <winformchart:Chart.ChartAreas>
-                                <winformchart:ChartArea/>
-                            </winformchart:Chart.ChartAreas>
-                        </winformchart:Chart>
-                    </WindowsFormsHost>
-                </TabItem>
-                <TabItem Header="General">
-                    <WindowsFormsHost x:Name="host2" Height="Auto">
-                        <winformchart:Chart x:Name="MyWinformChart2" >
-                            <winformchart:Chart.Series>
-                                <winformchart:Series Name="series" ChartType="Bar"/>
-                            </winformchart:Chart.Series>
-                            <winformchart:Chart.ChartAreas>
-                                <winformchart:ChartArea/>
-                            </winformchart:Chart.ChartAreas>
-                        </winformchart:Chart>
-                    </WindowsFormsHost>
-                </TabItem>
+            <TabControl x:Name ="tabControl" Grid.Row="4">
             </TabControl>
         </Grid>
     </Border>
