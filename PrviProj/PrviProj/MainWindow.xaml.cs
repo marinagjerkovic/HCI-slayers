@@ -317,24 +317,42 @@ namespace PrviProj
             TabItem tabItem = new TabItem();
             tabItem.Header = symbol;
             CartesianChart cart = new CartesianChart();
+            
 
-
-            ChartValues<double> dabl = new ChartValues<double>();
+            ChartValues<double> vals = new ChartValues<double>();
+            List<string> labels = new List<string>();
             foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
             {
                 Double a = Double.Parse(showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key]);
-                dabl.Add(a);
+                vals.Add(a);
                 //ne znam sta sa podacima
+            }
+            foreach(string key in showingCurrency.Timeseries.Keys)
+            {
+                labels.Add(key);
             }
             LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
                 {
                 new LineSeries
                 {
                     Title = "Series 1",
-                    Values = dabl
+                    Values = vals
                 }
-            };
+            };            
+            //cart.LegendLocation = LiveCharts.LegendLocation.Right;
+            cart.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator
+                {
+                    Step = 1,
+                    IsEnabled = false 
+                }
+            });
+
             cart.Series = sers;
+            cart.ScrollMode = LiveCharts.ScrollMode.XY;
+
             tabItem.Content = cart;
             //ScrollViewer skrol = new ScrollViewer();
             //skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
