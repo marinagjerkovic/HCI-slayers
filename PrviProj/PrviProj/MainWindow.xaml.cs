@@ -17,6 +17,9 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows.Forms.DataVisualization.Charting;
 using Newtonsoft.Json;
+using System.Windows.Forms.Integration;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace PrviProj
 {
@@ -60,15 +63,6 @@ namespace PrviProj
             for (int i = 0; i < 10; i++)
                 value.Add(i, 10 * i);
 
-            Chart chart = this.FindName("MyWinformChart") as Chart;
-            chart.DataSource = value;
-            chart.Series["series"].XValueMember = "Key";
-            chart.Series["series"].YValueMembers = "Value";
-
-            Chart chart2 = this.FindName("MyWinformChart2") as Chart;
-            chart2.DataSource = value;
-            chart2.Series["series"].XValueMember = "Key";
-            chart2.Series["series"].YValueMembers = "Value";
             shownCurrenciesList = new ObservableCollection<ShowingCurrencyClass>();
             //ucitajIspisiJSON();
         }
@@ -319,16 +313,58 @@ namespace PrviProj
             showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, string>>>();
 
             shownCurrenciesList.Add(showingCurrency);
+           
 
-            string ispis = string.Empty;
-            //proba
+
+            TabItem tabItem = new TabItem();
+            tabItem.Header = symbol;
+            CartesianChart cart = new CartesianChart();
+            
+            ChartValues<double> vals = new ChartValues<double>();
+            List<string> labels = new List<string>();
+
             foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
             {
-                ispis = ispis + "\n" + key + ":" + showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key];
+                Double a = Double.Parse(showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key]);
+                vals.Add(a);
+                //ne znam sta sa podacima, ovo je samo probno
             }
 
-            textBox.Text = ispis;
+            foreach(string key in showingCurrency.Timeseries.Keys)
+            {
+                labels.Add(key);
+            }
 
+            LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
+                {
+                new LineSeries
+                {
+                    Title = "Series 1",
+                    Values = vals
+                }
+            };            
+
+            //cart.LegendLocation = LiveCharts.LegendLocation.Right;
+            cart.AxisX.Add(new LiveCharts.Wpf.Axis
+            {
+                Labels = labels,
+                Separator = new LiveCharts.Wpf.Separator
+                {
+                    Step = 1,
+                    IsEnabled = false 
+                }
+            });
+
+            cart.Series = sers;
+            cart.ScrollMode = LiveCharts.ScrollMode.XY;
+
+            tabItem.Content = cart;
+            //ScrollViewer skrol = new ScrollViewer();
+            //skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
+            //skrol.Content = cart;
+            tabItem.Content = cart;
+            tabControl.Items.Add(tabItem);
+            tabControl.SelectedItem = tabItem;
 
         }
 
