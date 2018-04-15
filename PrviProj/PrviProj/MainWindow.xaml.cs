@@ -140,11 +140,7 @@ namespace PrviProj
                         
                     c.startTiming(10);
                     chosenDigitalList.Insert(0, c);
-                    break;
-                    
-                    
-                    
-                    
+                    break;   
                 }
             }
         }
@@ -195,7 +191,25 @@ namespace PrviProj
             }
         }
 
+        //FUNKCIJE KOJE SE POZIVAJU SA REMOVE BUTTONA
+        private void removeDigitalButton(Object sender, RoutedEventArgs e)
+        {
+            chosenDigitalList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
+            
 
+        }
+
+        private void removePhysicalButton(Object sender, RoutedEventArgs e)
+        {
+            chosenPhysicalList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
+
+        }
+
+        private void removeStockButton(Object sender, RoutedEventArgs e)
+        {
+            chosenStockList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
+
+        }
         private void RemoveCurrencyDigital(object sender, RoutedEventArgs e)
         {
 
@@ -398,11 +412,9 @@ namespace PrviProj
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         
+
+
     }
 }
