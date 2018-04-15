@@ -100,8 +100,7 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <CheckBox  Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyDigital" Unchecked="RemoveCurrencyDigital" />
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                    <CheckBox  Content="{Binding Path=NameAndSymbol}" IsChecked="{Binding Path=CheckedBox, Mode=TwoWay}" VerticalAlignment="Center" Checked="AddCurrencyDigital" Unchecked="RemoveCurrencyDigital" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
@@ -117,8 +116,7 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyPhysical" Unchecked="RemoveCurrencyPhysical" />
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                    <CheckBox  Content="{Binding Path=NameAndSymbol}" IsChecked="{Binding Path=CheckedBox, Mode=TwoWay}" VerticalAlignment="Center" Checked="AddCurrencyPhysical" Unchecked="RemoveCurrencyPhysical" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
@@ -134,8 +132,7 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddStock" Unchecked="RemoveStock" />
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                    <CheckBox  Content="{Binding Path=NameAndSymbol}" IsChecked="{Binding Path=CheckedBox, Mode=TwoWay}" VerticalAlignment="Center" Checked="AddStock" Unchecked="RemoveStock" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>

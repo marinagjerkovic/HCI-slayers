@@ -29,6 +29,37 @@ namespace PrviProj
         private LoadJSON _client;
         private TimeSpan _begin = TimeSpan.Zero;
         private TimeSpan _interval; //interval na koji ce se updatovati vrednost valute
+        private bool _checkedBox;
+
+
+        public string NameAndSymbol
+        {
+            get
+            {
+                return _name + " (" + _symbol + ")";
+            }
+            set
+            {
+                OnPropertyChanged("NameAndSymbol");
+            }
+        }
+
+        public bool CheckedBox
+        {
+            get
+            {
+                return _checkedBox;
+            }
+            set
+            {
+                if (value != _checkedBox)
+                {
+                    _checkedBox = value;
+                    OnPropertyChanged("CheckedBox");
+                }
+            }
+        }
+
 
         public string Name
         {

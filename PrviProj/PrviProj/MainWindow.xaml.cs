@@ -101,14 +101,14 @@ namespace PrviProj
             var comboBox = sender as ComboBox;
 
             // ... Assign the ItemsSource to the List.
-            comboBox.ItemsSource = data2ListStrings(digitalCurrenciesList);
+            comboBox.ItemsSource = digitalCurrenciesList;
 
             // ... Make the first item selected.
             comboBox.SelectedIndex = 0;
         }
 
 
-        
+
 
 
         private void ComboBox_Loaded_Physical(object sender, RoutedEventArgs e)
@@ -119,7 +119,7 @@ namespace PrviProj
             var comboBox = sender as ComboBox;
 
             // ... Assign the ItemsSource to the List.
-            comboBox.ItemsSource = data2ListStrings(physicalCurrenciesList);
+            comboBox.ItemsSource = physicalCurrenciesList;
 
             // ... Make the first item selected.
             comboBox.SelectedIndex = 0;
@@ -133,7 +133,7 @@ namespace PrviProj
             var comboBox = sender as ComboBox;
 
             // ... Assign the ItemsSource to the List.
-            comboBox.ItemsSource = data2ListStrings(stocksList);
+            comboBox.ItemsSource = stocksList;
 
             // ... Make the first item selected.
             comboBox.SelectedIndex = 0;
@@ -150,7 +150,7 @@ namespace PrviProj
                 if (c.Symbol.Equals(symbol))
                 {
                     //ovde ubacujem da se trazi vrednost u odnosu na referentnu valutu, nek je defaultna USD
-                    //i da se updatuje na svakih 10 sec
+                    //i da se updatuje na svakih 5 sec
 
                     c.Client = new LoadJSON();
                         
@@ -210,20 +210,49 @@ namespace PrviProj
         //FUNKCIJE KOJE SE POZIVAJU SA REMOVE BUTTONA
         private void removeDigitalButton(Object sender, RoutedEventArgs e)
         {
+            string symbol = ((CurrencyClass)dataGridDigital.SelectedItem).Symbol;
             chosenDigitalList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
-            
+
+            foreach (CurrencyClass c in digitalCurrenciesList)
+            {
+                if (c.Symbol.Equals(symbol))
+                {
+                    c.CheckedBox = false;
+                    break;
+                }
+            }
 
         }
 
         private void removePhysicalButton(Object sender, RoutedEventArgs e)
         {
-            chosenPhysicalList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
+            string symbol = ((CurrencyClass)dataGridPhysical.SelectedItem).Symbol;
+            chosenPhysicalList.Remove((CurrencyClass)dataGridPhysical.SelectedItem);
+
+            foreach (CurrencyClass c in physicalCurrenciesList)
+            {
+                if (c.Symbol.Equals(symbol))
+                {
+                    c.CheckedBox = false;
+                    break;
+                }
+            }
 
         }
 
         private void removeStockButton(Object sender, RoutedEventArgs e)
         {
-            chosenStockList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
+            string symbol = ((CurrencyClass)dataGridStock.SelectedItem).Symbol;
+            chosenStockList.Remove((CurrencyClass)dataGridStock.SelectedItem);
+
+            foreach (CurrencyClass c in stocksList)
+            {
+                if (c.Symbol.Equals(symbol))
+                {
+                    c.CheckedBox = false;
+                    break;
+                }
+            }
 
         }
         private void RemoveCurrencyDigital(object sender, RoutedEventArgs e)
@@ -361,7 +390,7 @@ namespace PrviProj
             string response = string.Empty;
             response = client.makeRequest();
 
-            if (!response.Contains("Error"))
+            if (!response.Contains("Error") && !response.Contains("kindly contact support"))
             {
                 var jObj = JsonConvert.DeserializeObject<dynamic>(response);
                 ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
@@ -375,6 +404,9 @@ namespace PrviProj
                 shownCurrenciesList.Add(showingCurrency);
 
                 addNewTab(showingCurrency);
+            }else
+            {
+                MessageBox.Show("unable to collect data");
             }
 
             
