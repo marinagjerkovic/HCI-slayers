@@ -132,7 +132,7 @@ namespace PrviProj
 
         public void startTiming(int seconds)
         {
-            
+            this.Value = "0";
             this.Interval = TimeSpan.FromSeconds(seconds);
             this.Timer = new Timer((e) =>
             {
@@ -162,7 +162,11 @@ namespace PrviProj
                 this.Value = recnik["5. Exchange Rate"];
             }catch
             {
-                this.Value = "unable to fetch";
+                if (this.Value.Equals("0"))
+                {
+                    this.Value = "unable to fetch";
+                }
+                
             }
             
         }
