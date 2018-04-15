@@ -49,6 +49,8 @@ namespace PrviProj
         {
             //var chart = new LineChart();
             InitializeComponent();
+            this.WindowState = System.Windows.WindowState.Maximized;
+            
             this.DataContext = this;
 
             digitalCurrenciesList = parser.parse("digital_currencies.txt");
