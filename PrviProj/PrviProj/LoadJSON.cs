@@ -17,7 +17,7 @@ namespace PrviProj
     }
 
 
-    class LoadJSON
+    public class LoadJSON
     {
         public string endPoint { get; set; }
         public httpVerb httpMethod { get; set; }
