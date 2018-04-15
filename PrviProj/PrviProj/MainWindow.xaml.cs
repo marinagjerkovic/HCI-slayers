@@ -396,6 +396,9 @@ namespace PrviProj
                     foreach (string key in showingCurrency.Timeseries.Keys)
                     {
                         labels.Add(key);
+                        labels.Add("");
+                        labels.Add("");
+                        labels.Add("");
                         vals.Add(showingCurrency.Timeseries[key]["1. open"]);
                         vals.Add(showingCurrency.Timeseries[key]["2. high"]);
                         vals.Add(showingCurrency.Timeseries[key]["3. low"]);
@@ -409,29 +412,28 @@ namespace PrviProj
                 new LineSeries
                 {
                     Title = showingCurrency.Metadata["2. Symbol"],
-                    Values = vals
+                    Values = vals                    
                 }
             };
-
             //cart.LegendLocation = LiveCharts.LegendLocation.Right;
             cart.AxisX.Add(new LiveCharts.Wpf.Axis
             {
                 Labels = labels,
                 Separator = new LiveCharts.Wpf.Separator
                 {
-                    Step = 1,
-                    IsEnabled = false
+                    Step = 4
                 },
                 LabelsRotation = 15
             });
 
             cart.Series = sers;
-            cart.ScrollMode = LiveCharts.ScrollMode.XY;
+            cart.Width = vals.Count*10;
+            
+            ScrollViewer skrol = new ScrollViewer();
+            skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
 
-            //ScrollViewer skrol = new ScrollViewer();
-            //skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
-            //skrol.Content = cart;
-            tabItem.Content = cart;
+            skrol.Content = cart;
+            tabItem.Content = skrol;
             tabControl.Items.Add(tabItem);
             tabControl.SelectedItem = tabItem;
         }
