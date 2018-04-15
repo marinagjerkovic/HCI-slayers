@@ -314,23 +314,27 @@ namespace PrviProj
 
             shownCurrenciesList.Add(showingCurrency);
            
+
+
             TabItem tabItem = new TabItem();
             tabItem.Header = symbol;
             CartesianChart cart = new CartesianChart();
             
-
             ChartValues<double> vals = new ChartValues<double>();
             List<string> labels = new List<string>();
+
             foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
             {
                 Double a = Double.Parse(showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key]);
                 vals.Add(a);
-                //ne znam sta sa podacima
+                //ne znam sta sa podacima, ovo je samo probno
             }
+
             foreach(string key in showingCurrency.Timeseries.Keys)
             {
                 labels.Add(key);
             }
+
             LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
                 {
                 new LineSeries
@@ -339,6 +343,7 @@ namespace PrviProj
                     Values = vals
                 }
             };            
+
             //cart.LegendLocation = LiveCharts.LegendLocation.Right;
             cart.AxisX.Add(new LiveCharts.Wpf.Axis
             {
