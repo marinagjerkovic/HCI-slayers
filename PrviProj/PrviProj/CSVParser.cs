@@ -21,14 +21,27 @@ namespace PrviProj
             {
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
+                string link = string.Empty;
+                string keyForTimeseries = string.Empty;
                 while (!parser.EndOfData)
                 {
                     //Processing row
                     
                     string[] fields = parser.ReadFields();
-                    
-                    
-                    currencyList.Add(new CurrencyClass { Symbol = fields[0], Name = fields[1]});
+
+                    keyForTimeseries = "Time Series (Digital Currency Monthly)";
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&symbol=" + fields[0] + "&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    try
+                    {
+                        LoadJSON client = new LoadJSON();
+                        client.endPoint = link;
+
+                        string response = string.Empty;
+                        //response = client.makeRequest();
+                        currencyList.Add(new CurrencyClass { Symbol = fields[0], Name = fields[1] });
+
+                    }
+                    catch (Exception e) { }
                     
                 }
             }

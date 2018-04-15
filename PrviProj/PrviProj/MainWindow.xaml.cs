@@ -302,69 +302,77 @@ namespace PrviProj
 
             string response = string.Empty;
             response = client.makeRequest();
-
-            var jObj = JsonConvert.DeserializeObject<dynamic>(response);
-            ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
-
-            showingCurrency.Metadata = jObj["Meta Data"].ToObject<Dictionary<string, string>>();
-            showingCurrency.Type = interval;
-            
-            //u zavisnosti od intervala se prosledjuje kljuc za timeseries
-            showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, string>>>();
-
-            shownCurrenciesList.Add(showingCurrency);
-           
-
-
-            TabItem tabItem = new TabItem();
-            tabItem.Header = symbol;
-            CartesianChart cart = new CartesianChart();
-            
-            ChartValues<double> vals = new ChartValues<double>();
-            List<string> labels = new List<string>();
-
-            foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
+            if (!response.Contains("Error Message"))
             {
-                Double a = Double.Parse(showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key]);
-                vals.Add(a);
-                //ne znam sta sa podacima, ovo je samo probno
-            }
+                var jObj = JsonConvert.DeserializeObject<dynamic>(response);
+                ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
 
-            foreach(string key in showingCurrency.Timeseries.Keys)
-            {
-                labels.Add(key);
-            }
+                showingCurrency.Metadata = jObj["Meta Data"].ToObject<Dictionary<string, string>>();
+                showingCurrency.Type = interval;
 
-            LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
+                //u zavisnosti od intervala se prosledjuje kljuc za timeseries
+                showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, string>>>();
+
+                shownCurrenciesList.Add(showingCurrency);
+
+
+
+                TabItem tabItem = new TabItem();
+                
+                tabItem.Header = symbol;
+                CartesianChart cart = new CartesianChart();
+
+                ChartValues<double> vals = new ChartValues<double>();
+                List<string> labels = new List<string>();
+
+                foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
+                {
+                    Double a = Double.Parse(showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key]);
+                    vals.Add(a);
+                    //ne znam sta sa podacima, ovo je samo probno
+                }
+
+                foreach (string key in showingCurrency.Timeseries.Keys)
+                {
+                    labels.Add(key);
+                }
+
+                LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
                 {
                 new LineSeries
                 {
                     Title = "Series 1",
                     Values = vals
                 }
-            };            
+            };
 
-            //cart.LegendLocation = LiveCharts.LegendLocation.Right;
-            cart.AxisX.Add(new LiveCharts.Wpf.Axis
-            {
-                Labels = labels,
-                Separator = new LiveCharts.Wpf.Separator
+                //cart.LegendLocation = LiveCharts.LegendLocation.Right;
+                cart.AxisX.Add(new LiveCharts.Wpf.Axis
                 {
-                    Step = 1,
-                    IsEnabled = false 
-                }
-            });
+                    Labels = labels,
+                    Separator = new LiveCharts.Wpf.Separator
+                    {
+                        Step = 1,
+                        IsEnabled = false
+                    }
+                });
 
-            cart.Series = sers;
-            cart.ScrollMode = LiveCharts.ScrollMode.XY;
+                cart.Series = sers;
+                cart.ScrollMode = LiveCharts.ScrollMode.XY;
 
-            tabItem.Content = cart;
-            //ScrollViewer skrol = new ScrollViewer();
-            //skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
-            //skrol.Content = cart;
-            tabItem.Content = cart;
-            tabControl.Items.Add(tabItem);
-            tabControl.SelectedItem = tabItem;
+                tabItem.Content = cart;
+                //ScrollViewer skrol = new ScrollViewer();
+                //skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
+                //skrol.Content = cart;
+                tabItem.Content = cart;
+                tabControl.Items.Add(tabItem);
+                tabControl.SelectedItem = tabItem;
+            }
+            else
+            {
+                MessageBox.Show("Error: https://www.alphavantage.co/ does not support this currenicy" );
+
+            }
 
         }
 
