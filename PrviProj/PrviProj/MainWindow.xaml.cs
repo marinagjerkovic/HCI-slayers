@@ -351,40 +351,47 @@ namespace PrviProj
             showingCurrency.Type = interval;
 
             //u zavisnosti od intervala se prosledjuje kljuc za timeseries
-            showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, string>>>();
+            showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, double>>>();
 
             shownCurrenciesList.Add(showingCurrency);
 
+            addNewTab(showingCurrency);
+        }
 
-
+        private void addNewTab(ShowingCurrencyClass showingCurrency)
+        {
             TabItem tabItem = new TabItem();
-                
-            tabItem.Header = symbol;
+            tabItem.Header = showingCurrency.Metadata["2. Symbol"];
             CartesianChart cart = new CartesianChart();
 
             ChartValues<double> vals = new ChartValues<double>();
             List<string> labels = new List<string>();
 
-            foreach (string key in showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)].Keys)
+            switch (showingCurrency.Type)
             {
-                Double a = Double.Parse(showingCurrency.Timeseries[showingCurrency.Timeseries.Keys.ElementAt(0)][key]);
-                vals.Add(a);
-                //ne znam sta sa podacima, ovo je samo probno
-            }
-
-            foreach (string key in showingCurrency.Timeseries.Keys)
-            {
-                labels.Add(key);
+                case CurrencyIntervalType.TIME_SERIES_INTRADAY:
+                case CurrencyIntervalType.TIME_SERIES_DAILY:
+                case CurrencyIntervalType.TIME_SERIES_WEEKLY:
+                case CurrencyIntervalType.TIME_SERIES_MONTHLY:
+                    foreach (string key in showingCurrency.Timeseries.Keys)
+                    {
+                        labels.Add(key);
+                        vals.Add(showingCurrency.Timeseries[key]["1. open"]);
+                        vals.Add(showingCurrency.Timeseries[key]["2. high"]);
+                        vals.Add(showingCurrency.Timeseries[key]["3. low"]);
+                        vals.Add(showingCurrency.Timeseries[key]["4. close"]);
+                    }
+                    break;
             }
 
             LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
-            {
-            new LineSeries
-            {
-                Title = "Series 1",
-                Values = vals
-            }
-        };
+                {
+                new LineSeries
+                {
+                    Title = showingCurrency.Metadata["2. Symbol"],
+                    Values = vals
+                }
+            };
 
             //cart.LegendLocation = LiveCharts.LegendLocation.Right;
             cart.AxisX.Add(new LiveCharts.Wpf.Axis
@@ -394,26 +401,23 @@ namespace PrviProj
                 {
                     Step = 1,
                     IsEnabled = false
-                }
+                },
+                LabelsRotation = 15
             });
 
             cart.Series = sers;
             cart.ScrollMode = LiveCharts.ScrollMode.XY;
 
-            tabItem.Content = cart;
             //ScrollViewer skrol = new ScrollViewer();
             //skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
             //skrol.Content = cart;
             tabItem.Content = cart;
             tabControl.Items.Add(tabItem);
             tabControl.SelectedItem = tabItem;
-        
-           
-
         }
 
 
-        
+
 
 
     }

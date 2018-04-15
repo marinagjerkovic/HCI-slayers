@@ -34,7 +34,7 @@ namespace PrviProj
 
 
         private Dictionary<string, string> _metadata;
-        private Dictionary<string, Dictionary<string, string>> _timeseries;
+        private Dictionary<string, Dictionary<string, double>> _timeseries;
         CurrencyIntervalType _type;
 
         public Dictionary<string, string> Metadata
@@ -54,7 +54,7 @@ namespace PrviProj
         }
 
 
-        public Dictionary<string, Dictionary<string, string>> Timeseries
+        public Dictionary<string, Dictionary<string, double>> Timeseries
         {
             get
             {
