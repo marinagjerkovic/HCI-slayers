@@ -146,8 +146,8 @@ namespace PrviProj
         private void getExchangeRate()
         {
             //vuku se podaci sa neta za zadat simbol i referentnu valutu
-            string refSymbol = "USD";
-            string link = "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency="+this.Symbol+"&to_currency="+refSymbol+"&apikey=9P2LP0T1YR34LBSK";
+            //string refSymbol = "USD";
+            string link = "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency="+this.Symbol+"&to_currency="+MainWindow.referentCurrency.Symbol+"&apikey=9P2LP0T1YR34LBSK";
 
             this.Client.endPoint = link;
 

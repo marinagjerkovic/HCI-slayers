@@ -41,7 +41,9 @@ namespace PrviProj
         public ObservableCollection<CurrencyClass> chosenStockList { get; set; }
 
         public ObservableCollection<ShowingCurrencyClass> shownCurrenciesList { get; set; }
-        
+
+        public ObservableCollection<CurrencyClass> referentCurrenciesList { get; set; }
+        public static CurrencyClass referentCurrency { get; set; }
 
         public MainWindow()
         {
@@ -56,6 +58,8 @@ namespace PrviProj
             chosenDigitalList = new ObservableCollection<CurrencyClass>();
             chosenPhysicalList = new ObservableCollection<CurrencyClass>();
             chosenStockList = new ObservableCollection<CurrencyClass>();
+
+            referentCurrenciesList = physicalCurrenciesList;
 
             //ucitajIspisiJSON();
 
@@ -80,6 +84,13 @@ namespace PrviProj
         }
 
 
+        private void ComboBox_Loaded_Refs(object sender, RoutedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            comboBox.ItemsSource = data2ListStrings(referentCurrenciesList);
+            comboBox.SelectedIndex = 0;
+        }
+
         private void ComboBox_Loaded_Digital(object sender, RoutedEventArgs e)
         {
 
@@ -93,6 +104,9 @@ namespace PrviProj
             // ... Make the first item selected.
             comboBox.SelectedIndex = 0;
         }
+
+
+        
 
 
         private void ComboBox_Loaded_Physical(object sender, RoutedEventArgs e)
@@ -138,7 +152,7 @@ namespace PrviProj
 
                     c.Client = new LoadJSON();
                         
-                    c.startTiming(10);
+                    c.startTiming(5);
                     chosenDigitalList.Insert(0, c);
                     break;   
                 }
@@ -155,7 +169,7 @@ namespace PrviProj
                 if (c.Symbol.Equals(symbol))
                 {
                     c.Client = new LoadJSON();
-                    c.startTiming(10);
+                    c.startTiming(5);
 
                     chosenPhysicalList.Insert(0, c);
                     break;
@@ -307,19 +321,19 @@ namespace PrviProj
             switch (interval)
             {
                 case CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY:
-                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_INTRADAY&symbol="+symbol+ "&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_INTRADAY&symbol="+symbol+ "&market="+referentCurrency.Symbol+"&apikey=9P2LP0T1YR34LBSK";
                     keyForTimeseries = "Time Series (Digital Currency Intraday)";
                     break;
                 case CurrencyIntervalType.DIGITAL_CURRENCY_DAILY:
-                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol="+symbol+"&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol="+symbol+ "&market=" + referentCurrency.Symbol + "&apikey=9P2LP0T1YR34LBSK";
                     keyForTimeseries = "Time Series (Digital Currency Daily)";
                     break;
                 case CurrencyIntervalType.DIGITAL_CURRENCY_WEEKLY:
-                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&symbol="+symbol+"&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&symbol="+symbol+ "&market=" + referentCurrency.Symbol + "&apikey=9P2LP0T1YR34LBSK";
                     keyForTimeseries = "Time Series (Digital Currency Weekly)";
                     break;
                 case CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY:
-                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_MONTHLY&symbol="+symbol+"&market=CNY&apikey=9P2LP0T1YR34LBSK";
+                    link = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_MONTHLY&symbol="+symbol+ "&market=" + referentCurrency.Symbol + "&apikey=9P2LP0T1YR34LBSK";
                     keyForTimeseries = "Time Series (Digital Currency Monthly)";
                     break;
                 case CurrencyIntervalType.TIME_SERIES_INTRADAY:
@@ -344,18 +358,24 @@ namespace PrviProj
 
             string response = string.Empty;
             response = client.makeRequest();
-            var jObj = JsonConvert.DeserializeObject<dynamic>(response);
-            ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
 
-            showingCurrency.Metadata = jObj["Meta Data"].ToObject<Dictionary<string, string>>();
-            showingCurrency.Type = interval;
+            if (!response.Contains("Error"))
+            {
+                var jObj = JsonConvert.DeserializeObject<dynamic>(response);
+                ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
 
-            //u zavisnosti od intervala se prosledjuje kljuc za timeseries
-            showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, double>>>();
+                showingCurrency.Metadata = jObj["Meta Data"].ToObject<Dictionary<string, string>>();
+                showingCurrency.Type = interval;
 
-            shownCurrenciesList.Add(showingCurrency);
+                //u zavisnosti od intervala se prosledjuje kljuc za timeseries
+                showingCurrency.Timeseries = jObj[keyForTimeseries].ToObject<Dictionary<string, Dictionary<string, double>>>();
 
-            addNewTab(showingCurrency);
+                shownCurrenciesList.Add(showingCurrency);
+
+                addNewTab(showingCurrency);
+            }
+
+            
         }
 
         private void addNewTab(ShowingCurrencyClass showingCurrency)
@@ -416,9 +436,30 @@ namespace PrviProj
             tabControl.SelectedItem = tabItem;
         }
 
+        
 
+        private void cbRefCurrencies_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            string name = comboBox.SelectedItem.ToString();
+            string symbol = name.Split('(')[1].Split(')')[0];
+            foreach (CurrencyClass c in referentCurrenciesList)
+            {
+                if (c.Symbol.Equals(symbol))
+                {
+                    referentCurrency = c;
+                    break;
+                }
+            }
 
-
-
+            foreach (CurrencyClass cur in chosenDigitalList)
+            {
+                cur.startTiming(5);
+            }
+            foreach (CurrencyClass cur in chosenPhysicalList)
+            {
+                cur.startTiming(5);
+            }
+        }
     }
 }

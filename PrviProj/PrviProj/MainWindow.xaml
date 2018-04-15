@@ -20,6 +20,7 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <!-- COMBO ZA REF VALUTE-->
+                <ComboBox Name="cbRefCurrencies" Margin="20 0 10 0" Loaded="ComboBox_Loaded_Refs" SelectionChanged="cbRefCurrencies_Selected"/>
             </Grid>
             <Grid  Grid.Row="1">
                 <Grid.ColumnDefinitions>
