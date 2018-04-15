@@ -138,7 +138,6 @@ namespace PrviProj
             response = _client.makeRequest();
             if (!response.Contains("Information"))
             {
-                MessageBox.Show(response);
                 var jObj = JsonConvert.DeserializeObject<dynamic>(response);
                 Dictionary<string, string> recnik = jObj["Realtime Currency Exchange Rate"].ToObject<Dictionary<string, string>>();
 
