@@ -460,14 +460,24 @@ namespace PrviProj
             List<string> labels = new List<string>();
 
             string title = "";
-            string tekst = "";
+            string time = "";
+
             switch (showingCurrency.Type)
             {
                 case CurrencyIntervalType.TIME_SERIES_INTRADAY:
                 case CurrencyIntervalType.TIME_SERIES_DAILY:
                 case CurrencyIntervalType.TIME_SERIES_WEEKLY:
                 case CurrencyIntervalType.TIME_SERIES_MONTHLY:
-                    title = showingCurrency.Metadata["2. Symbol"];
+                    string[] lista = showingCurrency.Metadata["1. Information"].Split(' ');
+                    if (showingCurrency.Type == CurrencyIntervalType.TIME_SERIES_INTRADAY)
+                    {
+                        time = lista[0] + lista[1];
+                    }
+                    else
+                    {
+                        time = lista[0];
+                    }
+                    title = showingCurrency.Metadata["2. Symbol"] + "("+time+")";
                     foreach (string key in showingCurrency.Timeseries.Keys)
                     {
                         labels.Add(key);
@@ -484,8 +494,17 @@ namespace PrviProj
                 case CurrencyIntervalType.DIGITAL_CURRENCY_DAILY:
                 case CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY:
                 case CurrencyIntervalType.DIGITAL_CURRENCY_WEEKLY:
-                    title = showingCurrency.Metadata["2. Digital Currency Code"];
-                    foreach(string key in showingCurrency.Timeseries.Keys)
+                    string[] listing = showingCurrency.Metadata["1. Information"].Split(' ');
+                    if (showingCurrency.Type == CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY)
+                    {
+                        time = listing[0] + listing[1];
+                    }
+                    else
+                    {
+                        time = listing[0];
+                    }
+                    title = showingCurrency.Metadata["2. Symbol"] + "(" + time+")";
+                    foreach (string key in showingCurrency.Timeseries.Keys)
                     {
                         labels.Add(key);
                         labels.Add("");
@@ -523,7 +542,15 @@ namespace PrviProj
             
             ScrollViewer skrol = new ScrollViewer();
             skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
+
+            ContextMenu cm = new ContextMenu();
+            MenuItem mi = new MenuItem();
+            mi.Header = "Close";
             
+            mi.Click += new RoutedEventHandler((sender, e) => menuItemClicked(sender,e, title));
+            cm.Items.Add(mi);
+
+            tabItem.ContextMenu = cm;
             tabItem.Header = title;
             skrol.Content = cart;
             tabItem.Content = skrol;
@@ -531,7 +558,42 @@ namespace PrviProj
             tabControl.SelectedItem = tabItem;
         }
 
-        
+        void menuItemClicked(object sender, RoutedEventArgs e, string title )
+        {
+            foreach(TabItem ti in tabControl.Items)
+            {
+                if (ti.Header.Equals(title))
+                {
+                    tabControl.Items.Remove(ti);
+                    break;
+                }
+            }
+
+            string time, compare;
+            string[] lista = null;
+            foreach(ShowingCurrencyClass scc in shownCurrenciesList)
+            {
+                lista = scc.Metadata["1. Information"].Split(' ');
+                if (scc.Type == CurrencyIntervalType.TIME_SERIES_INTRADAY || scc.Type==CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY)
+                {
+                    time = lista[0] + lista[1];
+                }
+                else
+                {
+                    time = lista[0];
+                }
+                compare = scc.Metadata["2. Symbol"] + "(" + time + ")";
+                if (compare.Equals(title))
+                {
+                    shownCurrenciesList.Remove(scc);
+                    break;
+                }
+            }
+
+            
+            MessageBox.Show("Removed" + title);
+        }
+
 
         private void cbRefCurrencies_Selected(object sender, SelectionChangedEventArgs e)
         {
