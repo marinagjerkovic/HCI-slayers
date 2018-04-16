@@ -45,6 +45,8 @@ namespace PrviProj
 
         public ObservableCollection<CurrencyClass> referentCurrenciesList { get; set; }
         public static CurrencyClass referentCurrency { get; set; }
+        public static double updateInterval { get; set; }
+        //historyIterval ne mora da se cuva, jer ce svaki objekat za sebe pamtiti kog je tipa
 
         public MainWindow()
         {
@@ -551,7 +553,7 @@ namespace PrviProj
                     cc.Client = new LoadJSON();
                     cc.startTiming(5);                    
 
-                    foreach (CurrencyClass cur in digitalCurrenciesList)
+                    foreach (CurrencyClass cur in physicalCurrenciesList)
                     {
                         if (cur.Symbol.Equals(cc.Symbol)){
                             cur.CheckedBox = true;
@@ -567,7 +569,7 @@ namespace PrviProj
                     cc.Symbol = lista[0];
                     cc.Name = lista[1];
 
-                    foreach (CurrencyClass cur in digitalCurrenciesList)
+                    foreach (CurrencyClass cur in stocksList)
                     {
                         if (cur.Symbol.Equals(cc.Symbol))
                         {
