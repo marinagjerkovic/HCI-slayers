@@ -1,7 +1,9 @@
-AED,United Arab Emirates Dirham,0
+5,1
+monthly,3
+ARS,Argentine Peso,6
 ChosenDigital
 ChosenPhysical
-AUD,Australian Dollar
 BAM,Bosnia-Herzegovina Convertible Mark
+AUD,Australian Dollar
 ChosenStock
 Shown

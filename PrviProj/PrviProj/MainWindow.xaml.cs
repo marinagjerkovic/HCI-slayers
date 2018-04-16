@@ -650,7 +650,16 @@ namespace PrviProj
             {
                 string line = cit.ReadLine();
                 string[] lista = line.Split(',');
+                updateInterval = Double.Parse(lista[0]);
+                string indexUpd = lista[1];
 
+                line = cit.ReadLine();
+                lista = line.Split(',');
+                historyInterval = lista[0];
+                string indexHist = lista[1];
+                
+                line = cit.ReadLine();
+                lista = line.Split(',');
                 referentCurrency.Symbol = lista[0];
                 referentCurrency.Name = lista[1];
                 string indexRef = lista[2];
@@ -664,7 +673,7 @@ namespace PrviProj
                     cc.Name = lista[1];
 
                     cc.Client = new LoadJSON();
-                    cc.startTiming(5);
+                    cc.startTiming(updateInterval);
 
                     foreach (CurrencyClass cur in digitalCurrenciesList)
                     {
@@ -683,7 +692,7 @@ namespace PrviProj
                     cc.Symbol = lista[0];
                     cc.Name = lista[1];
                     cc.Client = new LoadJSON();
-                    cc.startTiming(5);                    
+                    cc.startTiming(updateInterval);                    
 
                     foreach (CurrencyClass cur in physicalCurrenciesList)
                     {
@@ -718,6 +727,8 @@ namespace PrviProj
                     loadJSON((CurrencyIntervalType)o, lista[0]);
                 }
                 cbRefCurrencies.SelectedIndex = int.Parse(indexRef);
+                cbUpdateInterval.SelectedIndex = int.Parse(indexUpd);
+                cbHistoryInterval.SelectedIndex = int.Parse(indexHist);
             }
         }
 
@@ -726,6 +737,8 @@ namespace PrviProj
             base.OnClosed(e);
             using(StreamWriter pis = new StreamWriter(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\files\\savings.txt" ))
             {
+                pis.WriteLine(updateInterval +","+cbUpdateInterval.SelectedIndex);
+                pis.WriteLine(historyInterval + "," + cbHistoryInterval.SelectedIndex);
                 pis.WriteLine(referentCurrency.Symbol + "," + referentCurrency.Name+","+ cbRefCurrencies.SelectedIndex);
                 pis.WriteLine("ChosenDigital");
                 foreach(CurrencyClass cc in chosenDigitalList)
@@ -768,14 +781,14 @@ namespace PrviProj
         {
             ComboBox comboBox = sender as ComboBox;
             comboBox.ItemsSource = historyIntervalsList;
-            comboBox.SelectedIndex = 0;
+            //comboBox.SelectedIndex = 0;
         }
 
         private void ComboBox_Loaded_Update(object sender, RoutedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
             comboBox.ItemsSource = updateIntervalsList;
-            comboBox.SelectedIndex = 0;
+            //comboBox.SelectedIndex = 0;
         }
 
         private void cbDigital_SelectionChanged(object sender, SelectionChangedEventArgs e)
