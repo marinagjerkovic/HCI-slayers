@@ -35,7 +35,7 @@ namespace PrviProj
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(endPoint);
 
             request.Method = httpMethod.ToString();
-
+            //Console.WriteLine(response);
             using(HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
                 if (response.StatusCode != HttpStatusCode.OK)

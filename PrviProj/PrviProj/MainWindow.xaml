@@ -11,63 +11,89 @@
 
     <Border Margin="10 10 10 10">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="4*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="6*" />
-
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <!-- COMBO ZA REF VALUTE-->
-                <ComboBox Name="cbRefCurrencies" Margin="20 0 10 0" Loaded="ComboBox_Loaded_Refs" SelectionChanged="cbRefCurrencies_Selected"/>
-            </Grid>
-            <Grid  Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <DataGrid  AutoGenerateColumns="False"  x:Name="dataGridDigital" ItemsSource="{Binding Path=chosenDigitalList}" 
-                           IsReadOnly="True" Grid.Column="0" Margin="0 0 10 0" ScrollViewer.CanContentScroll="True" 
-                            ScrollViewer.VerticalScrollBarVisibility="Auto" Height="150" RowHeight="30" FontSize="16"
-                           RowBackground="PaleGreen" AlternatingRowBackground="AliceBlue" GridLinesVisibility="None"
-                           MouseDoubleClick="dataGridDigital_MouseDoubleClick" SelectedItem="Binding CurrencyClass">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="*"/>
+                   
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lRefCurrencies" Content="Chose referent currency:"  Grid.Column="0" />
+                    <ComboBox Name="cbRefCurrencies"  Grid.Column="1" Loaded="ComboBox_Loaded_Refs" SelectionChanged="cbRefCurrencies_Selected"/>
+                </Grid>
+                <DataGrid  AutoGenerateColumns="False"  
+                            x:Name="dataGridDigital" 
+                            ItemsSource="{Binding Path=chosenDigitalList}" 
+                            IsReadOnly="True" 
+                            ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                            Height="Auto" RowHeight="30" FontSize="16"
+                            RowBackground="PaleGreen" AlternatingRowBackground="AliceBlue" 
+                            GridLinesVisibility="None"
+                            MouseDoubleClick="dataGridDigital_MouseDoubleClick" 
+                            SelectedItem="Binding CurrencyClass" 
+                           Grid.Row="1"
+                            Margin=" 0 10 0 0">
                     <DataGrid.Columns >
                         <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="2*"/>
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="2*"  />
-                        <DataGridTextColumn Header="Value" Binding="{Binding Value}"  Width="4*"  />
-                        <DataGridTemplateColumn Width="2*">
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="3*"  />
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value}"  Width="3*"  />
+                        <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="Remove" Tag="{Binding}"  Click="removeDigitalButton" />
+                                    <Button Content="X" FontSize="20" Background="Red" Tag="{Binding}"  Click="removeDigitalButton" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
                     </DataGrid.Columns>
                 </DataGrid>
-                <DataGrid  ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  Height="150" RowHeight="30" FontSize="16"
-                           RowBackground="BlueViolet" AlternatingRowBackground="AliceBlue" AutoGenerateColumns="False"
-                           x:Name="dataGridPhysical" ItemsSource="{Binding Path=chosenPhysicalList}"  GridLinesVisibility="None" IsReadOnly="True" Grid.Column="1" Margin="0 0 10 0"
-                           MouseDoubleClick="dataGridPhysicalStock_MouseDoubleClick">
+                <DataGrid   x:Name="dataGridPhysical"  
+                            ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                            Height="Auto" RowHeight="30" FontSize="16"
+                            RowBackground="BlueViolet" AlternatingRowBackground="AliceBlue" 
+                            AutoGenerateColumns="False"
+                            ItemsSource="{Binding Path=chosenPhysicalList}"  GridLinesVisibility="None" 
+                            IsReadOnly="True" 
+                            Grid.Row="3" 
+                            MouseDoubleClick="dataGridPhysicalStock_MouseDoubleClick" 
+                             Margin=" 0 10 0 0">
                     <DataGrid.Columns >
-                        <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="Auto" MinWidth="100"/>
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="Auto" MinWidth="100" />
-                        <DataGridTextColumn Header="Value" Binding="{Binding Value}"  Width="*" MinWidth="100" />
-                        <DataGridTemplateColumn Width="2*">
+                        <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="2*"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="3*" />
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value}"  Width="3*" />
+                        <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="Remove" Tag="{Binding}"  Click="removePhysicalButton" />
+                                    <Button Content="X" Tag="{Binding}" Background="Red" Click="removePhysicalButton" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <DataGrid AutoGenerateColumns="False"  x:Name="dataGridStock" ItemsSource="{Binding chosenStockList}"  GridLinesVisibility="None" Height="150" RowHeight="30" FontSize="16"
-                           RowBackground="BlueViolet" AlternatingRowBackground="AliceBlue" IsReadOnly="True" 
-                          Grid.Column="2" Margin="0 0 10 0" ScrollViewer.CanContentScroll="True" 
-                             ScrollViewer.VerticalScrollBarVisibility="Auto" MouseDoubleClick="dataGridPhysicalStock_MouseDoubleClick">
+                <DataGrid AutoGenerateColumns="False"  
+                          x:Name="dataGridStock" 
+                          ItemsSource="{Binding chosenStockList}"  
+                          GridLinesVisibility="None" 
+                          Height="Auto" RowHeight="30" FontSize="16"
+                          RowBackground="BlueViolet" AlternatingRowBackground="AliceBlue" 
+                          IsReadOnly="True"
+                          Grid.Row="5" 
+                          ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          MouseDoubleClick="dataGridPhysicalStock_MouseDoubleClick"
+                          Margin=" 0 10 0 0">
                     <DataGrid.Columns >
                         <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="2*" MinWidth="100"/>
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}"  Width="4*" MinWidth="100" />
@@ -81,71 +107,80 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-            </Grid >
-            <!--sva 3 para labela, combo box -->
-            <Grid Margin=" 0 10 0 0" Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <!-- jedan par-->
-                <Grid Grid.Column="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Label x:Name="digital" Content="Add digital currencies:" Margin="0 0 10 0" Grid.Column="0" />
-                    <ComboBox Name="cbDigital" IsEnabled="True" Margin="0 0 10 0" Grid.Column="1" Loaded="ComboBox_Loaded_Digital" >
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <CheckBox  Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyDigital" Unchecked="RemoveCurrencyDigital" />
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </Grid>
-                <Grid Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Label x:Name="physical" Content="Add physical currencies:" Margin="0 0 10 0" Grid.Column="0" />
-                    <ComboBox Name="cbPhysical" Grid.Column="1" IsEnabled="True" Loaded="ComboBox_Loaded_Physical" Margin="0 0 10 0" >
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddCurrencyPhysical" Unchecked="RemoveCurrencyPhysical" />
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </Grid>
-                <Grid Grid.Column="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Label x:Name="stocks" Content="Add stocks:" Margin="0 0 10 0" Grid.Column="0" />
-                    <ComboBox Name="cbStocks" Margin="0 0 10 0" IsEnabled="True" Grid.Column="1" Loaded="ComboBox_Loaded_Stocks"  >
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <CheckBox Content="{Binding}" IsChecked="False" Width="20" VerticalAlignment="Center" Checked="AddStock" Unchecked="RemoveStock" />
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </Grid>
+                <!--sva 3 para labela, combo box -->
 
-            </Grid >
-            
-            <TabControl x:Name ="tabControl" Grid.Row="3">
-            </TabControl>
+                <Grid Grid.Row="2" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="digital" Content="Add digital currencies:"  Grid.Column="0" />
+                    <ComboBox Name="cbDigital" IsEnabled="True"  Grid.Column="1" Loaded="ComboBox_Loaded_Digital" >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox  Content="{Binding Path=NameAndSymbol}" IsChecked="{Binding Path=CheckedBox, Mode=TwoWay}" 
+                                               VerticalAlignment="Center" Checked="AddCurrencyDigital" Unchecked="RemoveCurrencyDigital" />
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="physical" Content="Add physical currencies:" Grid.Column="0" />
+                    <ComboBox Name="cbPhysical" Grid.Column="1" IsEnabled="True" Loaded="ComboBox_Loaded_Physical"  >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox  Content="{Binding Path=NameAndSymbol}" IsChecked="{Binding Path=CheckedBox, Mode=TwoWay}" 
+                                               VerticalAlignment="Center" Checked="AddCurrencyPhysical" Unchecked="RemoveCurrencyPhysical" />
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+                <Grid Grid.Row="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="stocks" Content="Add stocks:"  Grid.Column="0" />
+                    <ComboBox Name="cbStocks" IsEnabled="True" Grid.Column="1" Loaded="ComboBox_Loaded_Stocks"  >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox  Content="{Binding Path=NameAndSymbol}" IsChecked="{Binding Path=CheckedBox, Mode=TwoWay}" 
+                                               VerticalAlignment="Center" Checked="AddStock" Unchecked="RemoveStock" />
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="1" Margin=" 10 0 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="15*"/>
+                </Grid.RowDefinitions>
+                <TabControl x:Name ="tabControl" Grid.Row="1"/>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lTimeInterval" Content="Choose time interval currencies:" Grid.Column="1" Margin="0 0 10 0" />
+                    <ComboBox Name="cbTimeInterval" Margin="20 0 10 0"  Grid.Column="2" />
+                </Grid>
+            </Grid>
         </Grid>
     </Border>
 </Window>
