@@ -28,8 +28,17 @@ namespace PrviProj
     /// Interaction logic for MainWindow.xaml
     /// </summary>
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+    
         //Dictionary<int, double> value;
 
         private CSVParser parser = new CSVParser();
@@ -45,8 +54,11 @@ namespace PrviProj
 
         public ObservableCollection<CurrencyClass> referentCurrenciesList { get; set; }
         public static CurrencyClass referentCurrency { get; set; }
+
         public static double updateInterval { get; set; }
         //historyIterval ne mora da se cuva, jer ce svaki objekat za sebe pamtiti kog je tipa
+        public List<string> historyIntervalsList = new List<string> { "intraday", "daily", "weekly", "monthly" };
+        public List<string> updateIntervalsList = new List<string> { "2sec", "5sec", "10sec", "30sec", "1min", "5min" };
 
         public MainWindow()
         {
@@ -148,7 +160,7 @@ namespace PrviProj
 
                     c.Client = new LoadJSON();
                         
-                    c.startTiming(5);
+                    c.startTiming(updateInterval);
                     chosenDigitalList.Insert(0, c);
                     break;   
                 }
@@ -165,7 +177,7 @@ namespace PrviProj
                 if (c.Symbol.Equals(symbol))
                 {
                     c.Client = new LoadJSON();
-                    c.startTiming(5);
+                    c.startTiming(updateInterval);
 
                     chosenPhysicalList.Insert(0, c);
                     break;
@@ -307,9 +319,25 @@ namespace PrviProj
                         DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
 
                         string symbol = ((CurrencyClass)dgr.Item).Symbol;
+                       
+                        CurrencyIntervalType type;
+                        switch (cbHistoryInterval.SelectedItem.ToString())
+                        {
+                            case "intraday":
+                                type = CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY;
+                                break;
+                            case "daily":
+                                type = CurrencyIntervalType.DIGITAL_CURRENCY_DAILY;
+                                break;
+                            case "weekly":
+                                type = CurrencyIntervalType.DIGITAL_CURRENCY_WEEKLY;
+                                break;
+                            default:
+                                type = CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY;
+                                break;
+                        }
 
-                        //ovde ce se prosledjivati interval u zavisnosti od toga koji je korisnik izabrao
-                        loadJSON(CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY, symbol);
+                        loadJSON(type, symbol);
                     }
                 }
             }
@@ -327,8 +355,25 @@ namespace PrviProj
 
                         string symbol = ((CurrencyClass)dgr.Item).Symbol;
 
-                        //ovde ce se prosledjivati interval u zavisnosti od toga koji je korisnik izabrao
-                        loadJSON(CurrencyIntervalType.TIME_SERIES_MONTHLY, symbol);
+                       
+                        CurrencyIntervalType type;
+                        switch (cbHistoryInterval.SelectedItem.ToString())
+                        {
+                            case "intraday":
+                                type = CurrencyIntervalType.TIME_SERIES_INTRADAY;
+                                break;
+                            case "daily":
+                                type = CurrencyIntervalType.TIME_SERIES_DAILY;
+                                break;
+                            case "weekly":
+                                type = CurrencyIntervalType.TIME_SERIES_WEEKLY;
+                                break;
+                            default:
+                                type = CurrencyIntervalType.TIME_SERIES_MONTHLY;
+                                break;
+                        }
+
+                        loadJSON(type, symbol);
                     }
                 }
             }
@@ -616,6 +661,27 @@ namespace PrviProj
                     pis.WriteLine(scc.Metadata.ElementAt(1).Value+","+scc.Type);
                 }
             }
+        }
+
+        private void cbUpdateInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            string item = comboBox.SelectedItem.ToString();
+            updateInterval = Convert.ToDouble(item.Substring(0, item.Length - 3));
+        }
+
+        private void ComboBox_Loaded_History(object sender, RoutedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            comboBox.ItemsSource = historyIntervalsList;
+            comboBox.SelectedIndex = 0;
+        }
+
+        private void ComboBox_Loaded_Update(object sender, RoutedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            comboBox.ItemsSource = updateIntervalsList;
+            comboBox.SelectedIndex = 0;
         }
     }
 }

@@ -161,7 +161,7 @@ namespace PrviProj
         }
 
 
-        public void startTiming(int seconds)
+        public void startTiming(double seconds)
         {
             this.Value = "unable to fetch";
             this.Interval = TimeSpan.FromSeconds(seconds);
