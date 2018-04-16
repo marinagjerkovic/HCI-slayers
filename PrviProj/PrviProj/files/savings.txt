@@ -1,8 +1,5 @@
-AUD,Australian Dollar,7
+AFN,Afghan Afghani,1
 ChosenDigital
-AE,Aeternity
-AION,Aion
-BTC,Bitcoin
 ChosenPhysical
 ChosenStock
 Shown
