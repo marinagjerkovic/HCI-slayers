@@ -49,6 +49,8 @@ namespace PrviProj
         {
             //var chart = new LineChart();
             InitializeComponent();
+            this.WindowState = System.Windows.WindowState.Maximized;
+            
             this.DataContext = this;
 
             digitalCurrenciesList = parser.parse("digital_currencies.txt");
@@ -99,14 +101,14 @@ namespace PrviProj
             var comboBox = sender as ComboBox;
 
             // ... Assign the ItemsSource to the List.
-            comboBox.ItemsSource = data2ListStrings(digitalCurrenciesList);
+            comboBox.ItemsSource = digitalCurrenciesList;
 
             // ... Make the first item selected.
             comboBox.SelectedIndex = 0;
         }
 
 
-        
+
 
 
         private void ComboBox_Loaded_Physical(object sender, RoutedEventArgs e)
@@ -117,7 +119,7 @@ namespace PrviProj
             var comboBox = sender as ComboBox;
 
             // ... Assign the ItemsSource to the List.
-            comboBox.ItemsSource = data2ListStrings(physicalCurrenciesList);
+            comboBox.ItemsSource = physicalCurrenciesList;
 
             // ... Make the first item selected.
             comboBox.SelectedIndex = 0;
@@ -131,7 +133,7 @@ namespace PrviProj
             var comboBox = sender as ComboBox;
 
             // ... Assign the ItemsSource to the List.
-            comboBox.ItemsSource = data2ListStrings(stocksList);
+            comboBox.ItemsSource = stocksList;
 
             // ... Make the first item selected.
             comboBox.SelectedIndex = 0;
@@ -148,7 +150,7 @@ namespace PrviProj
                 if (c.Symbol.Equals(symbol))
                 {
                     //ovde ubacujem da se trazi vrednost u odnosu na referentnu valutu, nek je defaultna USD
-                    //i da se updatuje na svakih 10 sec
+                    //i da se updatuje na svakih 5 sec
 
                     c.Client = new LoadJSON();
                         
@@ -208,20 +210,49 @@ namespace PrviProj
         //FUNKCIJE KOJE SE POZIVAJU SA REMOVE BUTTONA
         private void removeDigitalButton(Object sender, RoutedEventArgs e)
         {
+            string symbol = ((CurrencyClass)dataGridDigital.SelectedItem).Symbol;
             chosenDigitalList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
-            
+
+            foreach (CurrencyClass c in digitalCurrenciesList)
+            {
+                if (c.Symbol.Equals(symbol))
+                {
+                    c.CheckedBox = false;
+                    break;
+                }
+            }
 
         }
 
         private void removePhysicalButton(Object sender, RoutedEventArgs e)
         {
-            chosenPhysicalList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
+            string symbol = ((CurrencyClass)dataGridPhysical.SelectedItem).Symbol;
+            chosenPhysicalList.Remove((CurrencyClass)dataGridPhysical.SelectedItem);
+
+            foreach (CurrencyClass c in physicalCurrenciesList)
+            {
+                if (c.Symbol.Equals(symbol))
+                {
+                    c.CheckedBox = false;
+                    break;
+                }
+            }
 
         }
 
         private void removeStockButton(Object sender, RoutedEventArgs e)
         {
-            chosenStockList.Remove((CurrencyClass)dataGridDigital.SelectedItem);
+            string symbol = ((CurrencyClass)dataGridStock.SelectedItem).Symbol;
+            chosenStockList.Remove((CurrencyClass)dataGridStock.SelectedItem);
+
+            foreach (CurrencyClass c in stocksList)
+            {
+                if (c.Symbol.Equals(symbol))
+                {
+                    c.CheckedBox = false;
+                    break;
+                }
+            }
 
         }
         private void RemoveCurrencyDigital(object sender, RoutedEventArgs e)
@@ -359,7 +390,7 @@ namespace PrviProj
             string response = string.Empty;
             response = client.makeRequest();
 
-            if (!response.Contains("Error"))
+            if (!response.Contains("Error") && !response.Contains("kindly contact support"))
             {
                 var jObj = JsonConvert.DeserializeObject<dynamic>(response);
                 ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
@@ -373,6 +404,9 @@ namespace PrviProj
                 shownCurrenciesList.Add(showingCurrency);
 
                 addNewTab(showingCurrency);
+            }else
+            {
+                MessageBox.Show("unable to collect data");
             }
 
             
@@ -381,18 +415,20 @@ namespace PrviProj
         private void addNewTab(ShowingCurrencyClass showingCurrency)
         {
             TabItem tabItem = new TabItem();
-            tabItem.Header = showingCurrency.Metadata["2. Symbol"];
             CartesianChart cart = new CartesianChart();
 
             ChartValues<double> vals = new ChartValues<double>();
             List<string> labels = new List<string>();
 
+            string title = "";
+            string tekst = "";
             switch (showingCurrency.Type)
             {
                 case CurrencyIntervalType.TIME_SERIES_INTRADAY:
                 case CurrencyIntervalType.TIME_SERIES_DAILY:
                 case CurrencyIntervalType.TIME_SERIES_WEEKLY:
                 case CurrencyIntervalType.TIME_SERIES_MONTHLY:
+                    title = showingCurrency.Metadata["2. Symbol"];
                     foreach (string key in showingCurrency.Timeseries.Keys)
                     {
                         labels.Add(key);
@@ -405,13 +441,30 @@ namespace PrviProj
                         vals.Add(showingCurrency.Timeseries[key]["4. close"]);
                     }
                     break;
+                case CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY:
+                case CurrencyIntervalType.DIGITAL_CURRENCY_DAILY:
+                case CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY:
+                case CurrencyIntervalType.DIGITAL_CURRENCY_WEEKLY:
+                    title = showingCurrency.Metadata["2. Digital Currency Code"];
+                    foreach(string key in showingCurrency.Timeseries.Keys)
+                    {
+                        labels.Add(key);
+                        labels.Add("");
+                        labels.Add("");
+                        labels.Add("");
+                        vals.Add(showingCurrency.Timeseries[key]["1a. open ("+referentCurrency.Symbol+")"]);
+                        vals.Add(showingCurrency.Timeseries[key]["2a. high (" + referentCurrency.Symbol + ")"]);
+                        vals.Add(showingCurrency.Timeseries[key]["3a. low (" + referentCurrency.Symbol + ")"]);
+                        vals.Add(showingCurrency.Timeseries[key]["4a. close (" + referentCurrency.Symbol + ")"]);
+                    }
+                    break;
             }
 
             LiveCharts.SeriesCollection sers = new LiveCharts.SeriesCollection
                 {
                 new LineSeries
                 {
-                    Title = showingCurrency.Metadata["2. Symbol"],
+                    Title = title,
                     Values = vals                    
                 }
             };
@@ -431,7 +484,8 @@ namespace PrviProj
             
             ScrollViewer skrol = new ScrollViewer();
             skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
-
+            
+            tabItem.Header = title;
             skrol.Content = cart;
             tabItem.Content = skrol;
             tabControl.Items.Add(tabItem);
