@@ -1,8 +1,5 @@
 AFN,Afghan Afghani,1
 ChosenDigital
-1ST,FirstBlood
 ChosenPhysical
-BAM,Bosnia-Herzegovina Convertible Mark
-AED,United Arab Emirates Dirham
 ChosenStock
 Shown
