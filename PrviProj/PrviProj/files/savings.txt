@@ -1,7 +1,10 @@
 10,2
-monthly,3
-ARS,Argentine Peso,6
+intraday,0
+BAM,Bosnia-Herzegovina Convertible Mark,10
 ChosenDigital
+BTCD,BitcoinDark
+BTC,Bitcoin
 ChosenPhysical
+BAM,Bosnia-Herzegovina Convertible Mark
 ChosenStock
 Shown

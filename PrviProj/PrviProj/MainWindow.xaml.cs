@@ -476,6 +476,7 @@ namespace PrviProj
 
             string title = "";
             string time = "";
+            int step = 0;
 
             switch (showingCurrency.Type)
             {
@@ -492,6 +493,7 @@ namespace PrviProj
                     {
                         time = lista[0];
                     }
+                    step = 4;
                     title = showingCurrency.Metadata["2. Symbol"] + "("+time+")";
                     foreach (string key in showingCurrency.Timeseries.Keys)
                     {
@@ -518,6 +520,7 @@ namespace PrviProj
                     {
                         time = listing[0];
                     }
+                    step = 4;
                     title = showingCurrency.Metadata["2. Digital Currency Code"] + "(" + time+")";
                     foreach (string key in showingCurrency.Timeseries.Keys)
                     {
@@ -541,17 +544,12 @@ namespace PrviProj
                     {
                         time = listej[0];
                     }
+                    step = 1;
                     title = showingCurrency.Metadata["2. Digital Currency Code"] + "(" + time + ")";
                     foreach (string key in showingCurrency.Timeseries.Keys)
                     {
                         labels.Add(key);
-                        labels.Add("");
-                        labels.Add("");
-                        labels.Add("");
                         vals.Add(showingCurrency.Timeseries[key]["1a. price (" + referentCurrency.Symbol + ")"]);
-                        vals.Add(showingCurrency.Timeseries[key]["1b. price (USD)"]);
-                        vals.Add(showingCurrency.Timeseries[key]["2. volume"]);
-                        vals.Add(showingCurrency.Timeseries[key]["3. market cap (USD)"]);
                     }
                     break;
             }
@@ -570,13 +568,19 @@ namespace PrviProj
                 Labels = labels,
                 Separator = new LiveCharts.Wpf.Separator
                 {
-                    Step = 4
+                    Step = step
                 },
                 LabelsRotation = 15
             });
 
             cart.Series = sers;
-            cart.Width = vals.Count*10;
+
+            cart.Width = vals.Count * 10;
+            if (step == 1)
+            {
+                cart.Width = vals.Count * 50;
+            }
+            
             
             ScrollViewer skrol = new ScrollViewer();
             skrol.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
@@ -607,7 +611,7 @@ namespace PrviProj
                 }
             }
 
-            string time, compare;
+            string time, compare, symbol="";
             string[] lista = null;
             foreach(ShowingCurrencyClass scc in shownCurrenciesList)
             {
@@ -620,7 +624,22 @@ namespace PrviProj
                 {
                     time = lista[0];
                 }
-                compare = scc.Metadata["2. Symbol"] + "(" + time + ")";
+                switch (scc.Type)
+                {
+                    case CurrencyIntervalType.DIGITAL_CURRENCY_DAILY:
+                    case CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY:
+                    case CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY:
+                    case CurrencyIntervalType.DIGITAL_CURRENCY_WEEKLY:
+                        symbol = scc.Metadata["2. Digital Currency Code"];
+                        break;
+                    case CurrencyIntervalType.TIME_SERIES_DAILY:
+                    case CurrencyIntervalType.TIME_SERIES_INTRADAY:
+                    case CurrencyIntervalType.TIME_SERIES_MONTHLY:
+                    case CurrencyIntervalType.TIME_SERIES_WEEKLY:
+                        symbol = scc.Metadata["2. Symbol"];
+                        break;
+                };
+                compare = symbol + "(" + time + ")";
                 if (compare.Equals(title))
                 {
                     shownCurrenciesList.Remove(scc);
