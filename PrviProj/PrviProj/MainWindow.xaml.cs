@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using System.Windows.Forms.Integration;
 using LiveCharts;
 using LiveCharts.Wpf;
+using System.IO;
 
 namespace PrviProj
 {
@@ -29,7 +30,7 @@ namespace PrviProj
 
     public partial class MainWindow : Window
     {
-        Dictionary<int, double> value;
+        //Dictionary<int, double> value;
 
         private CSVParser parser = new CSVParser();
         public ObservableCollection<CurrencyClass> physicalCurrenciesList { get; set; }
@@ -62,15 +63,10 @@ namespace PrviProj
             chosenStockList = new ObservableCollection<CurrencyClass>();
 
             referentCurrenciesList = physicalCurrenciesList;
-
-            //ucitajIspisiJSON();
-
-            value = new Dictionary<int, double>();
-            for (int i = 0; i < 10; i++)
-                value.Add(i, 10 * i);
-
             shownCurrenciesList = new ObservableCollection<ShowingCurrencyClass>();
-            //ucitajIspisiJSON();
+            referentCurrency = new CurrencyClass();
+
+            loadData();
         }
 
         //za prikaz u comboboxu
@@ -90,7 +86,6 @@ namespace PrviProj
         {
             var comboBox = sender as ComboBox;
             comboBox.ItemsSource = data2ListStrings(referentCurrenciesList);
-            comboBox.SelectedIndex = 0;
         }
 
         private void ComboBox_Loaded_Digital(object sender, RoutedEventArgs e)
@@ -104,7 +99,6 @@ namespace PrviProj
             comboBox.ItemsSource = digitalCurrenciesList;
 
             // ... Make the first item selected.
-            comboBox.SelectedIndex = 0;
         }
 
 
@@ -122,7 +116,6 @@ namespace PrviProj
             comboBox.ItemsSource = physicalCurrenciesList;
 
             // ... Make the first item selected.
-            comboBox.SelectedIndex = 0;
         }
 
         private void ComboBox_Loaded_Stocks(object sender, RoutedEventArgs e)
@@ -136,7 +129,6 @@ namespace PrviProj
             comboBox.ItemsSource = stocksList;
 
             // ... Make the first item selected.
-            comboBox.SelectedIndex = 0;
         }
 
 
@@ -515,6 +507,88 @@ namespace PrviProj
             foreach (CurrencyClass cur in chosenPhysicalList)
             {
                 cur.startTiming(5);
+            }
+        }
+
+        private void loadData()
+        {
+            using (StreamReader cit = new StreamReader(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\files\\savings.txt"))
+            {
+                string line = cit.ReadLine();
+                string[] lista = line.Split(',');
+
+                referentCurrency.Symbol = lista[0];
+                referentCurrency.Name = lista[1];
+                string indexRef = lista[2];
+
+                cit.ReadLine();
+                while((line=cit.ReadLine())!= "ChosenPhysical")
+                {
+                    lista = line.Split(',');
+                    CurrencyClass cc = new CurrencyClass();
+                    cc.Symbol = lista[0];
+                    cc.Name = lista[1];
+
+                    cc.Client = new LoadJSON();
+                    cc.startTiming(5);
+
+                    chosenDigitalList.Insert(0, cc);
+                }
+                while ((line = cit.ReadLine()) != "ChosenStock")
+                {
+                    lista = line.Split(',');
+                    CurrencyClass cc = new CurrencyClass();
+                    cc.Symbol = lista[0];
+                    cc.Name = lista[1];
+                    cc.Client = new LoadJSON();
+                    cc.startTiming(5);
+
+                    chosenPhysicalList.Insert(0, cc);
+                }
+                while ((line = cit.ReadLine()) != "Shown")
+                {
+                    lista = line.Split(',');
+                    CurrencyClass cc = new CurrencyClass();
+                    cc.Symbol = lista[0];
+                    cc.Name = lista[1];
+                    chosenStockList.Insert(0, cc);
+                }
+                while ((line = cit.ReadLine()) != null)
+                {
+                    lista = line.Split(',');
+                    object o = Enum.Parse(typeof(CurrencyIntervalType), lista[1]);
+                    loadJSON((CurrencyIntervalType)o, lista[0]);
+                }
+                cbRefCurrencies.SelectedIndex = int.Parse(indexRef);
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            using(StreamWriter pis = new StreamWriter(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\files\\savings.txt" ))
+            {
+                pis.WriteLine(referentCurrency.Symbol + "," + referentCurrency.Name+","+ cbRefCurrencies.SelectedIndex);
+                pis.WriteLine("ChosenDigital");
+                foreach(CurrencyClass cc in chosenDigitalList)
+                {
+                    pis.WriteLine(cc.Symbol + "," + cc.Name);
+                }
+                pis.WriteLine("ChosenPhysical");
+                foreach(CurrencyClass cc in chosenPhysicalList)
+                {
+                    pis.WriteLine(cc.Symbol + "," + cc.Name);
+                }
+                pis.WriteLine("ChosenStock");
+                foreach(CurrencyClass cc in chosenStockList)
+                {
+                    pis.WriteLine(cc.Symbol + "," + cc.Name);
+                }
+                pis.WriteLine("Shown");
+                foreach(ShowingCurrencyClass scc in shownCurrenciesList)
+                {
+                    pis.WriteLine(scc.Metadata.ElementAt(1).Value+","+scc.Type);
+                }
             }
         }
     }
