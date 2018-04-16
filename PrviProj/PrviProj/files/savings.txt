@@ -1,8 +1,8 @@
-AFN,Afghan Afghani,1
+AUD,Australian Dollar,7
 ChosenDigital
-1ST,FirstBlood
+AE,Aeternity
+AION,Aion
+BTC,Bitcoin
 ChosenPhysical
-BAM,Bosnia-Herzegovina Convertible Mark
-AED,United Arab Emirates Dirham
 ChosenStock
 Shown

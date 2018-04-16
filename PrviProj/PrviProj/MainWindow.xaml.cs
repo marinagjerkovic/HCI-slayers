@@ -382,7 +382,7 @@ namespace PrviProj
             string response = string.Empty;
             response = client.makeRequest();
 
-            if (!response.Contains("Error") && !response.Contains("kindly contact support"))
+            if (!response.Contains("Error") && !response.Contains("kindly contact support") && !string.IsNullOrEmpty(response))
             {
                 var jObj = JsonConvert.DeserializeObject<dynamic>(response);
                 ShowingCurrencyClass showingCurrency = new ShowingCurrencyClass();
@@ -532,6 +532,14 @@ namespace PrviProj
                     cc.Client = new LoadJSON();
                     cc.startTiming(5);
 
+                    foreach (CurrencyClass cur in digitalCurrenciesList)
+                    {
+                        if (cur.Symbol.Equals(cc.Symbol))
+                        {
+                            cur.CheckedBox = true;
+                        }
+                    }
+
                     chosenDigitalList.Insert(0, cc);
                 }
                 while ((line = cit.ReadLine()) != "ChosenStock")
@@ -541,7 +549,14 @@ namespace PrviProj
                     cc.Symbol = lista[0];
                     cc.Name = lista[1];
                     cc.Client = new LoadJSON();
-                    cc.startTiming(5);
+                    cc.startTiming(5);                    
+
+                    foreach (CurrencyClass cur in digitalCurrenciesList)
+                    {
+                        if (cur.Symbol.Equals(cc.Symbol)){
+                            cur.CheckedBox = true;
+                        }
+                    }
 
                     chosenPhysicalList.Insert(0, cc);
                 }
@@ -551,6 +566,15 @@ namespace PrviProj
                     CurrencyClass cc = new CurrencyClass();
                     cc.Symbol = lista[0];
                     cc.Name = lista[1];
+
+                    foreach (CurrencyClass cur in digitalCurrenciesList)
+                    {
+                        if (cur.Symbol.Equals(cc.Symbol))
+                        {
+                            cur.CheckedBox = true;
+                        }
+                    }
+
                     chosenStockList.Insert(0, cc);
                 }
                 while ((line = cit.ReadLine()) != null)

@@ -36,25 +36,32 @@ namespace PrviProj
 
             request.Method = httpMethod.ToString();
             //Console.WriteLine(response);
-            using(HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            try
             {
-                if (response.StatusCode != HttpStatusCode.OK)
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    throw new ApplicationException("error code: " + response.StatusCode);
-                }
-
-                using (Stream responseStream = response.GetResponseStream())
-                {
-                    if (responseStream != null)
+                    if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        using (StreamReader reader=new StreamReader(responseStream))
+                        throw new ApplicationException("error code: " + response.StatusCode);
+                    }
+
+                    using (Stream responseStream = response.GetResponseStream())
+                    {
+                        if (responseStream != null)
                         {
-                            strResponseValue = reader.ReadToEnd();
+                            using (StreamReader reader = new StreamReader(responseStream))
+                            {
+                                strResponseValue = reader.ReadToEnd();
+                            }
                         }
                     }
-                }
 
+                }
+            }catch
+            {
+                
             }
+            
 
             return strResponseValue;
 

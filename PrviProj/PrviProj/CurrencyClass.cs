@@ -163,7 +163,7 @@ namespace PrviProj
 
         public void startTiming(int seconds)
         {
-            this.Value = "0";
+            this.Value = "unable to fetch";
             this.Interval = TimeSpan.FromSeconds(seconds);
             this.Timer = new Timer((e) =>
             {
@@ -185,19 +185,16 @@ namespace PrviProj
             string response = string.Empty;
             response = this.Client.makeRequest();           
 
-            var jObj = JsonConvert.DeserializeObject<dynamic>(response);
+            
             try
             {
+                var jObj = JsonConvert.DeserializeObject<dynamic>(response);
                 Dictionary<string, string> recnik = jObj["Realtime Currency Exchange Rate"].ToObject<Dictionary<string, string>>();
 
                 this.Value = recnik["5. Exchange Rate"];
             }catch
-            {
-                if (this.Value.Equals("0"))
-                {
-                    this.Value = "unable to fetch";
-                }
-                
+            {                
+                this.Value = "unable to fetch";                               
             }
             
         }
