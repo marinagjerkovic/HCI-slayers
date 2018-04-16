@@ -56,9 +56,9 @@ namespace PrviProj
         public static CurrencyClass referentCurrency { get; set; }
 
         public static double updateInterval { get; set; }
-        //historyIterval ne mora da se cuva, jer ce svaki objekat za sebe pamtiti kog je tipa
+        public static string historyInterval { get; set; }
         public List<string> historyIntervalsList = new List<string> { "intraday", "daily", "weekly", "monthly" };
-        public List<string> updateIntervalsList = new List<string> { "2sec", "5sec", "10sec", "30sec", "1min", "5min" };
+        public List<string> updateIntervalsList = new List<string> { "2sec", "5sec", "10sec", "30sec", "1min", "5min", "10min", "30min", "1hrs", "12hrs", "24hrs" };
 
         public MainWindow()
         {
@@ -321,7 +321,7 @@ namespace PrviProj
                         string symbol = ((CurrencyClass)dgr.Item).Symbol;
                        
                         CurrencyIntervalType type;
-                        switch (cbHistoryInterval.SelectedItem.ToString())
+                        switch (historyInterval)
                         {
                             case "intraday":
                                 type = CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY;
@@ -357,7 +357,7 @@ namespace PrviProj
 
                        
                         CurrencyIntervalType type;
-                        switch (cbHistoryInterval.SelectedItem.ToString())
+                        switch (historyInterval)
                         {
                             case "intraday":
                                 type = CurrencyIntervalType.TIME_SERIES_INTRADAY;
@@ -490,7 +490,7 @@ namespace PrviProj
                         vals.Add(showingCurrency.Timeseries[key]["4. close"]);
                     }
                     break;
-                case CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY:
+                
                 case CurrencyIntervalType.DIGITAL_CURRENCY_DAILY:
                 case CurrencyIntervalType.DIGITAL_CURRENCY_MONTHLY:
                 case CurrencyIntervalType.DIGITAL_CURRENCY_WEEKLY:
@@ -503,7 +503,7 @@ namespace PrviProj
                     {
                         time = listing[0];
                     }
-                    title = showingCurrency.Metadata["2. Symbol"] + "(" + time+")";
+                    title = showingCurrency.Metadata["2. Digital Currency Code"] + "(" + time+")";
                     foreach (string key in showingCurrency.Timeseries.Keys)
                     {
                         labels.Add(key);
@@ -514,6 +514,29 @@ namespace PrviProj
                         vals.Add(showingCurrency.Timeseries[key]["2a. high (" + referentCurrency.Symbol + ")"]);
                         vals.Add(showingCurrency.Timeseries[key]["3a. low (" + referentCurrency.Symbol + ")"]);
                         vals.Add(showingCurrency.Timeseries[key]["4a. close (" + referentCurrency.Symbol + ")"]);
+                    }
+                    break;
+                case CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY:
+                    string[] listej = showingCurrency.Metadata["1. Information"].Split(' ');
+                    if (showingCurrency.Type == CurrencyIntervalType.DIGITAL_CURRENCY_INTRADAY)
+                    {
+                        time = listej[0] + listej[1];
+                    }
+                    else
+                    {
+                        time = listej[0];
+                    }
+                    title = showingCurrency.Metadata["2. Digital Currency Code"] + "(" + time + ")";
+                    foreach (string key in showingCurrency.Timeseries.Keys)
+                    {
+                        labels.Add(key);
+                        labels.Add("");
+                        labels.Add("");
+                        labels.Add("");
+                        vals.Add(showingCurrency.Timeseries[key]["1a. price (" + referentCurrency.Symbol + ")"]);
+                        vals.Add(showingCurrency.Timeseries[key]["1b. price (USD)"]);
+                        vals.Add(showingCurrency.Timeseries[key]["2. volume"]);
+                        vals.Add(showingCurrency.Timeseries[key]["3. market cap (USD)"]);
                     }
                     break;
             }
@@ -611,10 +634,12 @@ namespace PrviProj
 
             foreach (CurrencyClass cur in chosenDigitalList)
             {
+                cur.Value = "fetching";
                 cur.startTiming(5);
             }
             foreach (CurrencyClass cur in chosenPhysicalList)
             {
+                cur.Value = "fetching";
                 cur.startTiming(5);
             }
         }
@@ -730,6 +755,13 @@ namespace PrviProj
             ComboBox comboBox = sender as ComboBox;
             string item = comboBox.SelectedItem.ToString();
             updateInterval = Convert.ToDouble(item.Substring(0, item.Length - 3));
+            
+            if (item.EndsWith("min")){
+                updateInterval = updateInterval * 60;
+            }else if (item.EndsWith("hrs")){
+                updateInterval = updateInterval * 3600;
+            }
+            
         }
 
         private void ComboBox_Loaded_History(object sender, RoutedEventArgs e)
@@ -744,6 +776,30 @@ namespace PrviProj
             ComboBox comboBox = sender as ComboBox;
             comboBox.ItemsSource = updateIntervalsList;
             comboBox.SelectedIndex = 0;
+        }
+
+        private void cbDigital_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            comboBox.SelectedItem = null;
+        }
+
+        private void cbPhysical_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            comboBox.SelectedItem = null;
+        }
+
+        private void cbStocks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            comboBox.SelectedItem = null;
+        }
+
+        private void cbHistoryInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            historyInterval = comboBox.SelectedItem.ToString();
         }
     }
 }

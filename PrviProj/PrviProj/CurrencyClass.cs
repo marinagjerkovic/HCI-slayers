@@ -24,7 +24,7 @@ namespace PrviProj
         }
         private string _name;
         private string _symbol;
-        private string _value;
+        private string _value = "fetching";
         private Timer _timer;
         private LoadJSON _client;
         private TimeSpan _begin = TimeSpan.Zero;
@@ -163,7 +163,7 @@ namespace PrviProj
 
         public void startTiming(double seconds)
         {
-            this.Value = "unable to fetch";
+            
             this.Interval = TimeSpan.FromSeconds(seconds);
             this.Timer = new Timer((e) =>
             {
@@ -194,7 +194,7 @@ namespace PrviProj
                 this.Value = recnik["5. Exchange Rate"];
             }catch
             {                
-                this.Value = "unable to fetch";                               
+                                               
             }
             
         }

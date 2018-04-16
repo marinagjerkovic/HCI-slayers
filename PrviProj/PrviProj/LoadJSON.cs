@@ -59,7 +59,7 @@ namespace PrviProj
                 }
             }catch
             {
-                
+                strResponseValue = string.Empty;
             }
             
 
