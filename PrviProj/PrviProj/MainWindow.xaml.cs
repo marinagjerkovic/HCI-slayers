@@ -100,11 +100,14 @@ namespace PrviProj
         {
             var comboBox = sender as ComboBox;
             comboBox.ItemsSource = data2ListStrings(referentCurrenciesList);
+            if (comboBox.SelectedIndex == -1)
+            {
+                comboBox.SelectedIndex = 0;
+            }
         }
 
         private void ComboBox_Loaded_Digital(object sender, RoutedEventArgs e)
         {
-
 
             // ... Get the ComboBox reference.
             var comboBox = sender as ComboBox;
@@ -113,6 +116,10 @@ namespace PrviProj
             comboBox.ItemsSource = digitalCurrenciesList;
 
             // ... Make the first item selected.
+            if (comboBox.SelectedIndex == -1)
+            {
+                comboBox.SelectedIndex = 0;
+            }
         }
 
 
@@ -130,6 +137,10 @@ namespace PrviProj
             comboBox.ItemsSource = physicalCurrenciesList;
 
             // ... Make the first item selected.
+            if (comboBox.SelectedIndex == -1)
+            {
+                comboBox.SelectedIndex = 0;
+            }
         }
 
         private void ComboBox_Loaded_Stocks(object sender, RoutedEventArgs e)
@@ -143,6 +154,10 @@ namespace PrviProj
             comboBox.ItemsSource = stocksList;
 
             // ... Make the first item selected.
+            if (comboBox.SelectedIndex == -1)
+            {
+                comboBox.SelectedIndex = 0;
+            }
         }
 
 
@@ -649,86 +664,90 @@ namespace PrviProj
             using (StreamReader cit = new StreamReader(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\files\\savings.txt"))
             {
                 string line = cit.ReadLine();
-                string[] lista = line.Split(',');
-                updateInterval = Double.Parse(lista[0]);
-                string indexUpd = lista[1];
-
-                line = cit.ReadLine();
-                lista = line.Split(',');
-                historyInterval = lista[0];
-                string indexHist = lista[1];
-                
-                line = cit.ReadLine();
-                lista = line.Split(',');
-                referentCurrency.Symbol = lista[0];
-                referentCurrency.Name = lista[1];
-                string indexRef = lista[2];
-
-                cit.ReadLine();
-                while((line=cit.ReadLine())!= "ChosenPhysical")
+                if (line != null)
                 {
+                    string[] lista = line.Split(',');
+                    updateInterval = Double.Parse(lista[0]);
+                    string indexUpd = lista[1];
+
+                    line = cit.ReadLine();
                     lista = line.Split(',');
-                    CurrencyClass cc = new CurrencyClass();
-                    cc.Symbol = lista[0];
-                    cc.Name = lista[1];
+                    historyInterval = lista[0];
+                    string indexHist = lista[1];
 
-                    cc.Client = new LoadJSON();
-                    cc.startTiming(updateInterval);
+                    line = cit.ReadLine();
+                    lista = line.Split(',');
+                    referentCurrency.Symbol = lista[0];
+                    referentCurrency.Name = lista[1];
+                    string indexRef = lista[2];
 
-                    foreach (CurrencyClass cur in digitalCurrenciesList)
+                    cit.ReadLine();
+                    while ((line = cit.ReadLine()) != "ChosenPhysical")
                     {
-                        if (cur.Symbol.Equals(cc.Symbol))
+                        lista = line.Split(',');
+                        CurrencyClass cc = new CurrencyClass();
+                        cc.Symbol = lista[0];
+                        cc.Name = lista[1];
+
+                        cc.Client = new LoadJSON();
+                        cc.startTiming(updateInterval);
+
+                        foreach (CurrencyClass cur in digitalCurrenciesList)
                         {
-                            cur.CheckedBox = true;
+                            if (cur.Symbol.Equals(cc.Symbol))
+                            {
+                                cur.CheckedBox = true;
+                            }
                         }
+
+                        chosenDigitalList.Insert(0, cc);
                     }
-
-                    chosenDigitalList.Insert(0, cc);
-                }
-                while ((line = cit.ReadLine()) != "ChosenStock")
-                {
-                    lista = line.Split(',');
-                    CurrencyClass cc = new CurrencyClass();
-                    cc.Symbol = lista[0];
-                    cc.Name = lista[1];
-                    cc.Client = new LoadJSON();
-                    cc.startTiming(updateInterval);                    
-
-                    foreach (CurrencyClass cur in physicalCurrenciesList)
+                    while ((line = cit.ReadLine()) != "ChosenStock")
                     {
-                        if (cur.Symbol.Equals(cc.Symbol)){
-                            cur.CheckedBox = true;
-                        }
-                    }
+                        lista = line.Split(',');
+                        CurrencyClass cc = new CurrencyClass();
+                        cc.Symbol = lista[0];
+                        cc.Name = lista[1];
+                        cc.Client = new LoadJSON();
+                        cc.startTiming(updateInterval);
 
-                    chosenPhysicalList.Insert(0, cc);
-                }
-                while ((line = cit.ReadLine()) != "Shown")
-                {
-                    lista = line.Split(',');
-                    CurrencyClass cc = new CurrencyClass();
-                    cc.Symbol = lista[0];
-                    cc.Name = lista[1];
-
-                    foreach (CurrencyClass cur in stocksList)
-                    {
-                        if (cur.Symbol.Equals(cc.Symbol))
+                        foreach (CurrencyClass cur in physicalCurrenciesList)
                         {
-                            cur.CheckedBox = true;
+                            if (cur.Symbol.Equals(cc.Symbol))
+                            {
+                                cur.CheckedBox = true;
+                            }
                         }
-                    }
 
-                    chosenStockList.Insert(0, cc);
+                        chosenPhysicalList.Insert(0, cc);
+                    }
+                    while ((line = cit.ReadLine()) != "Shown")
+                    {
+                        lista = line.Split(',');
+                        CurrencyClass cc = new CurrencyClass();
+                        cc.Symbol = lista[0];
+                        cc.Name = lista[1];
+
+                        foreach (CurrencyClass cur in stocksList)
+                        {
+                            if (cur.Symbol.Equals(cc.Symbol))
+                            {
+                                cur.CheckedBox = true;
+                            }
+                        }
+
+                        chosenStockList.Insert(0, cc);
+                    }
+                    while ((line = cit.ReadLine()) != null)
+                    {
+                        lista = line.Split(',');
+                        object o = Enum.Parse(typeof(CurrencyIntervalType), lista[1]);
+                        loadJSON((CurrencyIntervalType)o, lista[0]);
+                    }
+                    cbRefCurrencies.SelectedIndex = int.Parse(indexRef);
+                    cbUpdateInterval.SelectedIndex = int.Parse(indexUpd);
+                    cbHistoryInterval.SelectedIndex = int.Parse(indexHist);
                 }
-                while ((line = cit.ReadLine()) != null)
-                {
-                    lista = line.Split(',');
-                    object o = Enum.Parse(typeof(CurrencyIntervalType), lista[1]);
-                    loadJSON((CurrencyIntervalType)o, lista[0]);
-                }
-                cbRefCurrencies.SelectedIndex = int.Parse(indexRef);
-                cbUpdateInterval.SelectedIndex = int.Parse(indexUpd);
-                cbHistoryInterval.SelectedIndex = int.Parse(indexHist);
             }
         }
 
@@ -781,14 +800,20 @@ namespace PrviProj
         {
             ComboBox comboBox = sender as ComboBox;
             comboBox.ItemsSource = historyIntervalsList;
-            //comboBox.SelectedIndex = 0;
+            if (comboBox.SelectedIndex == -1)
+            {
+                comboBox.SelectedIndex = 0;
+            }
         }
 
         private void ComboBox_Loaded_Update(object sender, RoutedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
             comboBox.ItemsSource = updateIntervalsList;
-            //comboBox.SelectedIndex = 0;
+            if (comboBox.SelectedIndex == -1)
+            {
+                comboBox.SelectedIndex = 0;
+            }
         }
 
         private void cbDigital_SelectionChanged(object sender, SelectionChangedEventArgs e)
